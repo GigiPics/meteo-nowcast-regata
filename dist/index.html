@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Meteo Nowcast Regata</title>
+  <meta name="description" content="Nowcasting operativo per regate: ingest JSON, confronto previsione-rilevamenti, immagini update e report sintetico." />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23072b46'/%3E%3Cpath d='M14 45c9-18 20-27 36-29-7 9-11 20-10 32-9-5-17-5-26-3z' fill='%2309c2d8'/%3E%3Cpath d='M18 48c10-4 19-3 29 2' stroke='%23ffffff' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #082033;
+      --muted: #607083;
+      --line: #d9e5ef;
+      --bg: #eef5f9;
+      --panel: #ffffff;
+      --navy: #072b46;
+      --cyan: #04b8cf;
+      --green: #26b37a;
+      --amber: #f4a71d;
+      --red: #df4b4b;
+      --shadow: 0 18px 50px rgba(5, 31, 52, .14);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 20% -10%, rgba(4,184,207,.22), transparent 36rem),
+        radial-gradient(circle at 100% 15%, rgba(244,167,29,.15), transparent 34rem),
+        var(--bg);
+    }
+    header {
+      background: linear-gradient(135deg, #061e32, #0b4566);
+      color: white;
+      padding: 18px clamp(16px, 4vw, 44px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+    .brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
+    .brand img { width: 54px; height: auto; background: white; border-radius: 10px; padding: 5px; }
+    .brand h1 { margin: 0; font-size: clamp(1.15rem, 2.2vw, 1.8rem); line-height: 1.05; }
+    .brand p { margin: 4px 0 0; color: #b9e8f3; font-size: .9rem; }
+    .status-pill {
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    main { padding: clamp(16px, 4vw, 44px); max-width: 1440px; margin: 0 auto; }
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(300px, 420px) 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+    section, .card {
+      background: rgba(255,255,255,.92);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: 0 12px 36px rgba(8,32,51,.08);
+      overflow: hidden;
+    }
+    .section-head {
+      padding: 18px 20px 12px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+    }
+    h2 { margin: 0; font-size: 1.08rem; }
+    .hint { color: var(--muted); margin: 4px 0 0; font-size: .92rem; }
+    .body { padding: 18px 20px 20px; }
+    label { display: block; font-weight: 750; font-size: .92rem; margin: 14px 0 6px; }
+    input, textarea, select, button {
+      font: inherit;
+      border-radius: 12px;
+    }
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid #c9d8e4;
+      background: white;
+      padding: 11px 12px;
+      color: var(--ink);
+    }
+    textarea { min-height: 96px; resize: vertical; }
+    button {
+      border: 0;
+      padding: 12px 14px;
+      font-weight: 800;
+      color: white;
+      background: var(--navy);
+      cursor: pointer;
+    }
+    button.secondary { background: #e7f0f7; color: var(--ink); }
+    button.accent { background: var(--cyan); color: #052538; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .drop {
+      border: 2px dashed #a9c3d6;
+      border-radius: 18px;
+      padding: 16px;
+      background: #f7fbfd;
+      margin-top: 12px;
+    }
+    .drop input { border: 0; padding: 0; background: transparent; }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 12px;
+    }
+    .metric {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(180deg, #fff, #f5fafc);
+    }
+    .metric span { color: var(--muted); font-size: .82rem; display: block; }
+    .metric strong { display: block; font-size: clamp(1.25rem, 2.2vw, 1.9rem); margin-top: 2px; }
+    .canvas {
+      min-height: 360px;
+      background: linear-gradient(145deg, #8dc9de, #d5eef6 55%, #eff8fb);
+      position: relative;
+      overflow: hidden;
+    }
+    .map-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.45) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.45) 1px, transparent 1px);
+      background-size: 48px 48px;
+      opacity: .55;
+    }
+    .coast {
+      position: absolute; left: -5%; top: 0; bottom: -6%; width: 48%;
+      background: linear-gradient(145deg, #528b5b, #2f6a48);
+      clip-path: polygon(0 0, 76% 0, 70% 16%, 84% 34%, 64% 53%, 78% 72%, 56% 100%, 0 100%);
+      opacity: .88;
+    }
+    .race-circle {
+      position: absolute; left: 52%; top: 45%;
+      width: min(42vw, 330px); aspect-ratio: 1;
+      border: 3px dashed rgba(7,43,70,.55);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255,255,255,.08);
+    }
+    .center-dot {
+      position: absolute; left: 52%; top: 45%;
+      width: 18px; height: 18px; border-radius: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--cyan); border: 4px solid var(--navy);
+      box-shadow: 0 0 0 12px rgba(4,184,207,.2);
+    }
+    .wind-arrow {
+      position: absolute; left: 52%; top: 45%;
+      width: 120px; height: 5px; background: var(--navy);
+      transform-origin: 0 50%;
+      border-radius: 99px;
+    }
+    .wind-arrow::after {
+      content: ""; position: absolute; right: -2px; top: 50%;
+      transform: translateY(-50%);
+      border-left: 16px solid var(--navy);
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+    }
+    .map-label {
+      position: absolute; background: rgba(255,255,255,.86);
+      border: 1px solid var(--line); border-radius: 12px; padding: 7px 10px;
+      font-weight: 800; font-size: .85rem;
+    }
+    .label-venue { left: 12%; bottom: 14%; }
+    .label-race { left: 47%; top: 26%; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border-bottom: 1px solid var(--line); padding: 10px 8px; text-align: left; vertical-align: top; }
+    th { color: var(--muted); font-size: .84rem; }
+    .badge { border-radius: 999px; padding: 4px 9px; font-weight: 800; font-size: .78rem; display: inline-block; }
+    .ok { background: #e2f8ee; color: #086342; }
+    .warn { background: #fff3d1; color: #7b4c00; }
+    .bad { background: #ffe2e2; color: #8b1e1e; }
+    .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+    .thumb { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #f7fbfd; }
+    .thumb img { width: 100%; height: 100px; object-fit: cover; display: block; }
+    .thumb small { display: block; padding: 7px 8px; color: var(--muted); word-break: break-all; }
+    .report {
+      white-space: pre-wrap;
+      background: #061e32;
+      color: #d8f6ff;
+      border-radius: 18px;
+      padding: 16px;
+      min-height: 180px;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: .9rem;
+      overflow: auto;
+    }
+    @media (max-width: 980px) {
+      header { position: static; align-items: flex-start; }
+      .grid { grid-template-columns: 1fr; }
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .row { grid-template-columns: 1fr; }
+      .status-pill { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <img src="assets/fiv-logo.png" alt="Logo FIV" />
+      <div>
+        <h1>Meteo Nowcast Regata</h1>
+        <p>Upload update meteo, rilevamenti e controllo operativo della race area</p>
+      </div>
+    </div>
+    <div class="status-pill">Versione privata · MVP</div>
+  </header>
+
+  <main>
+    <div class="grid">
+      <section>
+        <div class="section-head">
+          <div>
+            <h2>Setup campo</h2>
+            <p class="hint">Preset ILCA Dún Laoghaire, modificabile per altre venue.</p>
+          </div>
+        </div>
+        <div class="body">
+          <label for="venue">Venue / evento</label>
+          <input id="venue" value="ILCA Worlds · Dún Laoghaire" />
+          <div class="row">
+            <div>
+              <label for="lat">Centro race area · lat</label>
+              <input id="lat" type="number" step="0.0001" value="53.3238" />
+            </div>
+            <div>
+              <label for="lon">Centro race area · lon</label>
+              <input id="lon" type="number" step="0.0001" value="-6.1337" />
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label for="radius">Raggio filtro</label>
+              <select id="radius">
+                <option value="10">10 NM · standard</option>
+                <option value="5">5 NM · campo stretto</option>
+                <option value="15">15 NM · baia larga</option>
+              </select>
+            </div>
+            <div>
+              <label for="raceTime">Ora partenza</label>
+              <input id="raceTime" value="12:00" />
+            </div>
+          </div>
+
+          <label for="forecast">Previsione attesa</label>
+          <textarea id="forecast">Vento previsto 110-130°M, 8-11 kt, raffiche 13-16 kt. Possibile calo progressivo nel pomeriggio. Onda/chop E 0.6-0.8 m, periodo 4 s. Corrente da verificare su boa/campo.</textarea>
+
+          <div class="drop">
+            <label for="jsonFile">Upload JSON rilevamenti / CurrWindNav</label>
+            <input id="jsonFile" type="file" accept=".json,application/json" />
+            <p class="hint">I punti fuori dal raggio vengono esclusi dal confronto.</p>
+          </div>
+
+          <div class="drop">
+            <label for="imageFiles">Upload immagini update meteo</label>
+            <input id="imageFiles" type="file" accept="image/*" multiple />
+            <p class="hint">Le immagini restano nella sessione del browser e servono per briefing rapido.</p>
+          </div>
+
+          <div class="actions">
+            <button class="accent" id="analyzeBtn">Aggiorna nowcast</button>
+            <button class="secondary" id="downloadBtn">Scarica riepilogo</button>
+          </div>
+        </div>
+      </section>
+
+      <div>
+        <section>
+          <div class="section-head">
+            <div>
+              <h2>Quadro operativo</h2>
+              <p class="hint">Sintesi dei dati validi dentro la race area.</p>
+            </div>
+          </div>
+          <div class="body">
+            <div class="metrics">
+              <div class="metric"><span>Punti validi</span><strong id="validCount">0</strong></div>
+              <div class="metric"><span>Punti esclusi</span><strong id="excludedCount">0</strong></div>
+              <div class="metric"><span>Vento / corrente media</span><strong id="avgSpeed">—</strong></div>
+              <div class="metric"><span>Direzione media</span><strong id="avgDir">—</strong></div>
+            </div>
+          </div>
+          <div class="canvas" aria-label="Mappa schematica race area">
+            <div class="map-grid"></div>
+            <div class="coast"></div>
+            <div class="race-circle"></div>
+            <div class="center-dot"></div>
+            <div class="wind-arrow" id="windArrow"></div>
+            <div class="map-label label-venue">Dún Laoghaire</div>
+            <div class="map-label label-race">Race area · 10 NM filtro</div>
+          </div>
+        </section>
+
+        <section style="margin-top:18px">
+          <div class="section-head">
+            <div>
+              <h2>Controllo qualità e confronto</h2>
+              <p class="hint">Per decidere se correggere la previsione successiva.</p>
+            </div>
+          </div>
+          <div class="body">
+            <table>
+              <thead><tr><th>Voce</th><th>Valore</th><th>Stato</th></tr></thead>
+              <tbody id="qualityRows">
+                <tr><td>JSON</td><td>Nessun file caricato</td><td><span class="badge warn">in attesa</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section style="margin-top:18px">
+          <div class="section-head">
+            <div>
+              <h2>Immagini update</h2>
+              <p class="hint">PredictWind, radar, cloud, wave o screenshot di campo.</p>
+            </div>
+          </div>
+          <div class="body">
+            <div class="gallery" id="gallery"></div>
+          </div>
+        </section>
+
+        <section style="margin-top:18px">
+          <div class="section-head">
+            <div>
+              <h2>Riepilogo esportabile</h2>
+              <p class="hint">Testo pronto da archiviare o usare nel briefing.</p>
+            </div>
+          </div>
+          <div class="body">
+            <div class="report" id="report"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const state = { observations: [], images: [], lastFileName: "" };
+    const $ = (id) => document.getElementById(id);
+    const toRad = d => d * Math.PI / 180;
+    const toDeg = r => (r * 180 / Math.PI + 360) % 360;
+
+    function haversineNm(aLat, aLon, bLat, bLon) {
+      const Rkm = 6371;
+      const dLat = toRad(bLat - aLat);
+      const dLon = toRad(bLon - aLon);
+      const s1 = Math.sin(dLat / 2) ** 2;
+      const s2 = Math.cos(toRad(aLat)) * Math.cos(toRad(bLat)) * Math.sin(dLon / 2) ** 2;
+      return (2 * Rkm * Math.asin(Math.sqrt(s1 + s2))) / 1.852;
+    }
+
+    function findNumber(obj, keys) {
+      for (const key of keys) {
+        if (obj && obj[key] !== undefined && obj[key] !== null && obj[key] !== "") {
+          const v = Number(obj[key]);
+          if (Number.isFinite(v)) return v;
+        }
+      }
+      return null;
+    }
+
+    function flatten(value, out = []) {
+      if (Array.isArray(value)) {
+        value.forEach(v => flatten(v, out));
+      } else if (value && typeof value === "object") {
+        const lat = findNumber(value, ["lat","latitude","Lat","Latitude","midLat"]);
+        const lon = findNumber(value, ["lon","lng","longitude","Lon","Lng","Longitude","midLon","midLng"]);
+        const speed = findNumber(value, ["speed","windSpeed","vel","velocity","intensity","intensita","magnitude","value"]);
+        const dir = findNumber(value, ["dir","direction","windDir","direzione","bearing","from"]);
+        if (lat !== null && lon !== null) out.push({ raw: value, lat, lon, speed, dir });
+        Object.values(value).forEach(v => {
+          if (typeof v === "string" && /^[\[{]/.test(v.trim())) {
+            try { flatten(JSON.parse(v), out); } catch {}
+          } else if (v && typeof v === "object") {
+            flatten(v, out);
+          }
+        });
+      }
+      return out;
+    }
+
+    function circularMean(values) {
+      const good = values.filter(v => Number.isFinite(v));
+      if (!good.length) return null;
+      const x = good.reduce((s, d) => s + Math.cos(toRad(d)), 0) / good.length;
+      const y = good.reduce((s, d) => s + Math.sin(toRad(d)), 0) / good.length;
+      return Math.round(toDeg(Math.atan2(y, x)));
+    }
+
+    function likelyUnit(speed) {
+      if (!Number.isFinite(speed)) return "";
+      if (speed > 40) return "m/min";
+      if (speed < 3) return "kt o m/s";
+      return "kt";
+    }
+
+    function convertToKnots(speed, unit) {
+      if (!Number.isFinite(speed)) return null;
+      if (unit === "m/min") return speed * 0.0323974;
+      return speed;
+    }
+
+    function analyze() {
+      const lat = Number($("lat").value);
+      const lon = Number($("lon").value);
+      const radius = Number($("radius").value);
+      const rows = [];
+      const obs = state.observations.map(p => ({ ...p, distNm: haversineNm(lat, lon, p.lat, p.lon) }));
+      const valid = obs.filter(p => p.distNm <= radius);
+      const excluded = obs.filter(p => p.distNm > radius);
+      const speeds = valid.map(p => p.speed).filter(Number.isFinite);
+      const avgRaw = speeds.length ? speeds.reduce((a,b) => a+b, 0) / speeds.length : null;
+      const unit = likelyUnit(avgRaw);
+      const avgKt = avgRaw === null ? null : convertToKnots(avgRaw, unit);
+      const maxRaw = speeds.length ? Math.max(...speeds) : null;
+      const meanDir = circularMean(valid.map(p => p.dir));
+
+      $("validCount").textContent = String(valid.length);
+      $("excludedCount").textContent = String(excluded.length);
+      $("avgSpeed").textContent = avgRaw === null ? "—" : `${avgRaw.toFixed(1)} ${unit}${avgKt !== null && unit === "m/min" ? ` / ${avgKt.toFixed(2)} kt` : ""}`;
+      $("avgDir").textContent = meanDir === null ? "—" : `${meanDir}°`;
+      $("windArrow").style.transform = `rotate(${(meanDir ?? 120) + 180}deg)`;
+
+      if (!state.lastFileName) {
+        rows.push(["JSON", "Nessun file caricato", "in attesa", "warn"]);
+      } else {
+        rows.push(["File", state.lastFileName, "letto", "ok"]);
+        rows.push(["Filtro spaziale", `${valid.length} dentro ${radius} NM · ${excluded.length} esclusi`, excluded.length ? "controllare esclusi" : "ok", excluded.length ? "warn" : "ok"]);
+        rows.push(["Unità intensità", unit || "non determinata", unit === "m/min" ? "corrente/rilevamento debole" : "verificare sorgente", unit ? "ok" : "warn"]);
+        rows.push(["Direzione media", meanDir === null ? "non disponibile" : `${meanDir}°`, meanDir === null ? "manca dato" : "usabile", meanDir === null ? "warn" : "ok"]);
+        rows.push(["Picco osservato", maxRaw === null ? "non disponibile" : `${maxRaw.toFixed(1)} ${unit}`, maxRaw === null ? "manca dato" : "usabile", maxRaw === null ? "warn" : "ok"]);
+      }
+      $("qualityRows").innerHTML = rows.map(([a,b,c,k]) => `<tr><td>${a}</td><td>${b}</td><td><span class="badge ${k}">${c}</span></td></tr>`).join("");
+      buildReport({ valid, excluded, avgRaw, avgKt, unit, meanDir, maxRaw, radius });
+    }
+
+    function buildReport(stats = {}) {
+      const now = new Date();
+      const venue = $("venue").value.trim();
+      const forecast = $("forecast").value.trim();
+      const raceTime = $("raceTime").value.trim();
+      const line = stats.valid?.length
+        ? `Rilevamenti validi: ${stats.valid.length} entro ${stats.radius} NM; esclusi: ${stats.excluded.length}. Media: ${stats.avgRaw?.toFixed(1)} ${stats.unit}${stats.unit === "m/min" ? ` (${stats.avgKt?.toFixed(2)} kt)` : ""}; direzione media ${stats.meanDir ?? "n/d"}°.`
+        : "Rilevamenti validi: nessun dato caricato o nessun punto dentro il raggio campo.";
+      const bias = stats.avgRaw !== null && stats.avgRaw !== undefined
+        ? "Uso operativo: confrontare media e direzione osservata con il range previsto; se lo scarto persiste 15-20 minuti, applicare bias alla previsione successiva nello stesso regime."
+        : "Uso operativo: caricare JSON di campo per stimare bias locale prima del prossimo briefing.";
+      $("report").textContent =
+`NOWCAST REGATA
+Venue: ${venue}
+Aggiornamento: ${now.toLocaleString("it-IT")}
+Partenza/riferimento: ${raceTime}
+
+Previsione di base:
+${forecast}
+
+Controllo rilevamenti:
+${line}
+
+Trigger da monitorare:
+- Persistenza rotazione per 15-20 minuti, non singolo salto.
+- Differenza lato costa / lato largo e linee scure o zone lucide.
+- Chop o corrente non allineati alla direzione vento.
+- Pioggia/virga/visibilità in calo come segnale di nuova massa d'aria.
+
+${bias}
+`;
+    }
+
+    $("jsonFile").addEventListener("change", async (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      state.lastFileName = file.name;
+      const text = await file.text();
+      try {
+        state.observations = flatten(JSON.parse(text));
+      } catch (error) {
+        state.observations = [];
+        $("qualityRows").innerHTML = `<tr><td>JSON</td><td>${error.message}</td><td><span class="badge bad">errore</span></td></tr>`;
+      }
+      analyze();
+    });
+
+    $("imageFiles").addEventListener("change", (event) => {
+      const files = Array.from(event.target.files || []);
+      state.images.forEach(item => URL.revokeObjectURL(item.url));
+      state.images = files.map(file => ({ name: file.name, url: URL.createObjectURL(file) }));
+      $("gallery").innerHTML = state.images.map(img => `<div class="thumb"><img src="${img.url}" alt="${img.name}"><small>${img.name}</small></div>`).join("");
+    });
+
+    $("analyzeBtn").addEventListener("click", analyze);
+    $("downloadBtn").addEventListener("click", () => {
+      analyze();
+      const blob = new Blob([$("report").textContent], { type: "text/markdown;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `nowcast-${new Date().toISOString().slice(0,10)}.md`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    });
+
+    buildReport();
+    analyze();
+  </script>
+</body>
+</html>
