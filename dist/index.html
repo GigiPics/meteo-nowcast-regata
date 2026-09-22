@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Meteo Nowcast Regata</title>
-  <meta name="description" content="Nowcasting operativo per regate: ingest JSON, confronto previsione-rilevamenti, immagini update e report sintetico." />
+  <meta name="description" content="Nowcasting operativo per regate: lettura JSON CurrWindNav entro 10 NM, immagini update e report sintetico." />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23072b46'/%3E%3Cpath d='M14 45c9-18 20-27 36-29-7 9-11 20-10 32-9-5-17-5-26-3z' fill='%2309c2d8'/%3E%3Cpath d='M18 48c10-4 19-3 29 2' stroke='%23ffffff' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
   <style>
     :root {
@@ -537,13 +537,13 @@
           </div>
           <div class="row">
             <div>
-              <label for="radius">Raggio filtro</label>
+            <label for="radius">Raggio visuale</label>
               <select id="radius" aria-describedby="radiusHelp">
                 <option value="10">10 NM · standard</option>
                 <option value="5">5 NM · campo stretto</option>
                 <option value="15">15 NM · baia larga</option>
               </select>
-              <p class="field-help" id="radiusHelp"><strong>Come usarlo:</strong> 10 NM è lo standard operativo. Usa 5 NM se vuoi solo il campo reale; 15 NM se vuoi includere tutta la baia.</p>
+              <p class="field-help" id="radiusHelp"><strong>Solo visuale:</strong> modifica il cerchio sulla mappa. La verifica JSON CurrWindNav usa sempre 10 NM, come da skill meteo.</p>
             </div>
             <div>
               <label for="raceTime">Ora partenza</label>
@@ -554,15 +554,16 @@
 
           <label for="forecast">Previsione attesa</label>
           <textarea id="forecast" aria-describedby="forecastHelp">Vento previsto 110-130°M, 8-11 kt, raffiche 13-16 kt. Possibile calo progressivo nel pomeriggio. Onda/chop E 0.6-0.8 m, periodo 4 s. Corrente da verificare su boa/campo.</textarea>
-          <p class="field-help" id="forecastHelp"><strong>Cosa scrivere:</strong> sintesi della previsione prima dell’uscita: direzione magnetica, intensità, raffiche, onda/chop, corrente e rischio principale. Il confronto con i rilevamenti serve a stimare il bias locale.</p>
+          <p class="field-help" id="forecastHelp"><strong>Cosa scrivere:</strong> sintesi della previsione prima dell’uscita. La verifica JSON qui sotto legge solo i rilevamenti CurrWindNav entro 10 NM.</p>
 
           <div class="drop">
             <label for="jsonFile">Upload JSON rilevamenti / CurrWindNav</label>
             <input id="jsonFile" type="file" accept=".json,application/json" aria-describedby="jsonHelp" />
-            <p class="field-help" id="jsonHelp"><strong>File da caricare:</strong> esportazione JSON con lat/lon e, se disponibili, intensità e direzione. La app legge anche JSON annidati o campi salvati come stringa.</p>
+            <p class="field-help" id="jsonHelp"><strong>File da caricare:</strong> JSON CurrWindNav completo. La lettura considera solo record con coordinate geografiche valide entro 10 NM dal centro campo.</p>
             <ul class="help-list">
-              <li>I punti fuori dal raggio selezionato vengono esclusi.</li>
-              <li>Usa questo dato per correggere la previsione successiva nello stesso regime.</li>
+              <li>Record senza coordinate: esclusi.</li>
+              <li>Record duplicati: rimossi prima dell’analisi.</li>
+              <li>Record fuori 10 NM: esclusi dalla verifica.</li>
             </ul>
           </div>
 
@@ -577,7 +578,7 @@
           </div>
 
           <div class="actions">
-            <button class="accent" id="analyzeBtn">Aggiorna nowcast</button>
+            <button class="accent" id="analyzeBtn">Leggi JSON CurrWindNav 10 NM</button>
             <button class="secondary" id="downloadBtn">Scarica riepilogo</button>
           </div>
         </div>
@@ -613,8 +614,8 @@
         <section style="margin-top:18px">
           <div class="section-head">
             <div>
-              <h2>Controllo qualità e confronto</h2>
-              <p class="hint">Per decidere se correggere la previsione successiva.</p>
+              <h2>Verifica JSON CurrWindNav</h2>
+              <p class="hint">Solo record con coordinate valide entro 10 NM dal centro campo.</p>
             </div>
           </div>
           <div class="body">
@@ -657,7 +658,7 @@
   </main>
 
   <script>
-    const state = { observations: [], images: [], lastFileName: "" };
+    const state = { observations: [], images: [], lastFileName: "", jsonText: "", currStats: null };
     const $ = (id) => document.getElementById(id);
     const toRad = d => d * Math.PI / 180;
     const toDeg = r => (r * 180 / Math.PI + 360) % 360;
@@ -686,24 +687,76 @@
       return null;
     }
 
-    function flatten(value, out = []) {
+    function findAny(obj, keys) {
+      for (const key of keys) {
+        if (obj && obj[key] !== undefined && obj[key] !== null && obj[key] !== "") return obj[key];
+      }
+      return "";
+    }
+
+    function hasLikelyCurrWindFields(obj) {
+      if (!obj || typeof obj !== "object" || Array.isArray(obj)) return false;
+      const keys = Object.keys(obj);
+      return keys.some(k => [
+        "id","lat","lon","lng","latitude","longitude","midLat","midLon","lat1","lon1","lat2","lon2",
+        "speed","windSpeed","vel","velocity","intensity","intensita","magnitude","value",
+        "dir","direction","windDir","direzione","bearing","from","timestamp","time","date","createdAt","updatedAt"
+      ].includes(k));
+    }
+
+    function extractCoordinate(obj) {
+      let lat = findNumber(obj, ["lat","latitude","Lat","Latitude"]);
+      let lon = findNumber(obj, ["lon","lng","longitude","Lon","Lng","Longitude"]);
+      if (lat !== null && lon !== null) return { lat, lon, source: "lat/lon" };
+
+      lat = findNumber(obj, ["midLat","midlat","midLatitude"]);
+      lon = findNumber(obj, ["midLon","midLng","midlon","midLongitude"]);
+      if (lat !== null && lon !== null) return { lat, lon, source: "midLat/midLon" };
+
+      const lat1 = findNumber(obj, ["lat1","startLat"]);
+      const lon1 = findNumber(obj, ["lon1","lng1","startLon","startLng"]);
+      const lat2 = findNumber(obj, ["lat2","endLat"]);
+      const lon2 = findNumber(obj, ["lon2","lng2","endLon","endLng"]);
+      if ([lat1, lon1, lat2, lon2].every(Number.isFinite)) {
+        return { lat: (lat1 + lat2) / 2, lon: (lon1 + lon2) / 2, source: "midpoint" };
+      }
+      return null;
+    }
+
+    function collectCurrWindNav(value, acc = { rawCandidates: 0, noCoords: 0, records: [] }) {
       if (Array.isArray(value)) {
-        value.forEach(v => flatten(v, out));
+        value.forEach(v => collectCurrWindNav(v, acc));
       } else if (value && typeof value === "object") {
-        const lat = findNumber(value, ["lat","latitude","Lat","Latitude","midLat"]);
-        const lon = findNumber(value, ["lon","lng","longitude","Lon","Lng","Longitude","midLon","midLng"]);
-        const speed = findNumber(value, ["speed","windSpeed","vel","velocity","intensity","intensita","magnitude","value"]);
-        const dir = findNumber(value, ["dir","direction","windDir","direzione","bearing","from"]);
-        if (lat !== null && lon !== null) out.push({ raw: value, lat, lon, speed, dir });
+        if (hasLikelyCurrWindFields(value)) {
+          acc.rawCandidates += 1;
+          const coord = extractCoordinate(value);
+          if (!coord || !Number.isFinite(coord.lat) || !Number.isFinite(coord.lon)) {
+            acc.noCoords += 1;
+          } else {
+            const hasSegment = ["lat1","lon1","lat2","lon2","midLat","midLon","midLng"].some(k => value[k] !== undefined);
+            acc.records.push({
+              id: String(findAny(value, ["id","uid","key","uuid"]) || ""),
+              type: hasSegment ? "corrente/deriva" : "vento",
+              timestamp: String(findAny(value, ["timestamp","time","date","datetime","createdAt","updatedAt","ora"]) || ""),
+              coach: String(findAny(value, ["coach","user","author","boat","barca"]) || ""),
+              lat: coord.lat,
+              lon: coord.lon,
+              coordSource: coord.source,
+              speed: findNumber(value, ["speed","windSpeed","vel","velocity","intensity","intensita","magnitude","value","spd","v"]),
+              dir: findNumber(value, ["dir","direction","windDir","direzione","bearing","from","angle"]),
+              raw: value
+            });
+          }
+        }
         Object.values(value).forEach(v => {
           if (typeof v === "string" && /^[\[{]/.test(v.trim())) {
-            try { flatten(JSON.parse(v), out); } catch {}
+            try { collectCurrWindNav(JSON.parse(v), acc); } catch {}
           } else if (v && typeof v === "object") {
-            flatten(v, out);
+            collectCurrWindNav(v, acc);
           }
         });
       }
-      return out;
+      return acc;
     }
 
     function circularMean(values) {
@@ -727,12 +780,47 @@
       return speed;
     }
 
-    function analyze() {
+    function processCurrWindNavJson() {
+      if (!state.jsonText) {
+        $("qualityRows").innerHTML = `<tr><td>JSON</td><td>Carica prima un file CurrWindNav</td><td><span class="badge warn">in attesa</span></td></tr>`;
+        buildReport();
+        return;
+      }
       const lat = Number($("lat").value);
       const lon = Number($("lon").value);
-      const radius = Number($("radius").value);
+      const radius = 10;
       const rows = [];
-      const obs = state.observations.map(p => ({ ...p, distNm: haversineNm(lat, lon, p.lat, p.lon) }));
+      let collected;
+      try {
+        collected = collectCurrWindNav(JSON.parse(state.jsonText));
+      } catch (error) {
+        state.observations = [];
+        $("qualityRows").innerHTML = `<tr><td>JSON</td><td>${error.message}</td><td><span class="badge bad">errore</span></td></tr>`;
+        buildReport();
+        return;
+      }
+
+      const seen = new Set();
+      const unique = [];
+      let duplicates = 0;
+      for (const record of collected.records) {
+        const key = record.id || [
+          record.type,
+          record.timestamp,
+          record.lat.toFixed(5),
+          record.lon.toFixed(5),
+          Number.isFinite(record.speed) ? record.speed : "",
+          Number.isFinite(record.dir) ? record.dir : ""
+        ].join("|");
+        if (seen.has(key)) {
+          duplicates += 1;
+          continue;
+        }
+        seen.add(key);
+        unique.push(record);
+      }
+
+      const obs = unique.map(p => ({ ...p, distNm: haversineNm(lat, lon, p.lat, p.lon) }));
       const valid = obs.filter(p => p.distNm <= radius);
       const excluded = obs.filter(p => p.distNm > radius);
       const speeds = valid.map(p => p.speed).filter(Number.isFinite);
@@ -749,17 +837,21 @@
       $("windArrow").style.transform = `rotate(${(meanDir ?? 120) + 180}deg)`;
       if (locationMap) updateMapMarker(false);
 
-      if (!state.lastFileName) {
-        rows.push(["JSON", "Nessun file caricato", "in attesa", "warn"]);
-      } else {
-        rows.push(["File", state.lastFileName, "letto", "ok"]);
-        rows.push(["Filtro spaziale", `${valid.length} dentro ${radius} NM · ${excluded.length} esclusi`, excluded.length ? "controllare esclusi" : "ok", excluded.length ? "warn" : "ok"]);
-        rows.push(["Unità intensità", unit || "non determinata", unit === "m/min" ? "corrente/rilevamento debole" : "verificare sorgente", unit ? "ok" : "warn"]);
-        rows.push(["Direzione media", meanDir === null ? "non disponibile" : `${meanDir}°`, meanDir === null ? "manca dato" : "usabile", meanDir === null ? "warn" : "ok"]);
-        rows.push(["Picco osservato", maxRaw === null ? "non disponibile" : `${maxRaw.toFixed(1)} ${unit}`, maxRaw === null ? "manca dato" : "usabile", maxRaw === null ? "warn" : "ok"]);
-      }
+      rows.push(["File", state.lastFileName || "JSON caricato", "letto", "ok"]);
+      rows.push(["Filtro skill", `Centro ${lat.toFixed(4)}, ${lon.toFixed(4)} · raggio fisso 10 NM`, "applicato", "ok"]);
+      rows.push(["Record grezzi candidati", String(collected.rawCandidates), "conteggio", "ok"]);
+      rows.push(["Duplicati rimossi", String(duplicates), duplicates ? "rimossi" : "nessuno", duplicates ? "warn" : "ok"]);
+      rows.push(["Senza coordinate", String(collected.noCoords), collected.noCoords ? "esclusi" : "nessuno", collected.noCoords ? "warn" : "ok"]);
+      rows.push(["Fuori 10 NM", String(excluded.length), excluded.length ? "esclusi" : "nessuno", excluded.length ? "warn" : "ok"]);
+      rows.push(["Validi entro 10 NM", String(valid.length), valid.length ? "usabili" : "nessun dato", valid.length ? "ok" : "bad"]);
+      rows.push(["Unità intensità", unit || "non determinata", unit === "m/min" ? "corrente/rilevamento debole" : "verificare sorgente", unit ? "ok" : "warn"]);
+      rows.push(["Direzione media", meanDir === null ? "non disponibile" : `${meanDir}°`, meanDir === null ? "manca dato" : "usabile", meanDir === null ? "warn" : "ok"]);
+      rows.push(["Picco osservato", maxRaw === null ? "non disponibile" : `${maxRaw.toFixed(1)} ${unit}`, maxRaw === null ? "manca dato" : "usabile", maxRaw === null ? "warn" : "ok"]);
+
       $("qualityRows").innerHTML = rows.map(([a,b,c,k]) => `<tr><td>${a}</td><td>${b}</td><td><span class="badge ${k}">${c}</span></td></tr>`).join("");
-      buildReport({ valid, excluded, avgRaw, avgKt, unit, meanDir, maxRaw, radius });
+      state.observations = valid;
+      state.currStats = { valid, excluded, avgRaw, avgKt, unit, meanDir, maxRaw, radius, rawCandidates: collected.rawCandidates, duplicates, noCoords: collected.noCoords };
+      buildReport(state.currStats);
     }
 
     function buildReport(stats = {}) {
@@ -768,13 +860,10 @@
       const forecast = $("forecast").value.trim();
       const raceTime = $("raceTime").value.trim();
       const line = stats.valid?.length
-        ? `Rilevamenti validi: ${stats.valid.length} entro ${stats.radius} NM; esclusi: ${stats.excluded.length}. Media: ${stats.avgRaw?.toFixed(1)} ${stats.unit}${stats.unit === "m/min" ? ` (${stats.avgKt?.toFixed(2)} kt)` : ""}; direzione media ${stats.meanDir ?? "n/d"}°.`
-        : "Rilevamenti validi: nessun dato caricato o nessun punto dentro il raggio campo.";
-      const bias = stats.avgRaw !== null && stats.avgRaw !== undefined
-        ? "Uso operativo: confrontare media e direzione osservata con il range previsto; se lo scarto persiste 15-20 minuti, applicare bias alla previsione successiva nello stesso regime."
-        : "Uso operativo: caricare JSON di campo per stimare bias locale prima del prossimo briefing.";
+        ? `Validi entro 10 NM: ${stats.valid.length}; fuori 10 NM: ${stats.excluded.length}; duplicati rimossi: ${stats.duplicates}; senza coordinate: ${stats.noCoords}. Media: ${stats.avgRaw?.toFixed(1)} ${stats.unit}${stats.unit === "m/min" ? ` (${stats.avgKt?.toFixed(2)} kt)` : ""}; direzione media ${stats.meanDir ?? "n/d"}°.`
+        : "Rilevamenti validi: nessun JSON letto o nessun record con coordinate entro 10 NM.";
       $("report").textContent =
-`NOWCAST REGATA
+`VERIFICA JSON CURRWINDNAV · 10 NM
 Venue: ${venue}
 Aggiornamento: ${now.toLocaleString("it-IT")}
 Partenza/riferimento: ${raceTime}
@@ -782,16 +871,14 @@ Partenza/riferimento: ${raceTime}
 Previsione di base:
 ${forecast}
 
-Controllo rilevamenti:
+Lettura rilevamenti:
 ${line}
 
-Trigger da monitorare:
-- Persistenza rotazione per 15-20 minuti, non singolo salto.
-- Differenza lato costa / lato largo e linee scure o zone lucide.
-- Chop o corrente non allineati alla direzione vento.
-- Pioggia/virga/visibilità in calo come segnale di nuova massa d'aria.
-
-${bias}
+Regola applicata:
+- Solo record con coordinate geografiche valide.
+- Deduplica prima della selezione.
+- Conservati solo record entro 10 NM dal centro della previsione.
+- Record senza coordinate o fuori 10 NM esclusi dalla verifica.
 `;
     }
 
@@ -799,14 +886,15 @@ ${bias}
       const file = event.target.files?.[0];
       if (!file) return;
       state.lastFileName = file.name;
-      const text = await file.text();
-      try {
-        state.observations = flatten(JSON.parse(text));
-      } catch (error) {
-        state.observations = [];
-        $("qualityRows").innerHTML = `<tr><td>JSON</td><td>${error.message}</td><td><span class="badge bad">errore</span></td></tr>`;
-      }
-      analyze();
+      state.jsonText = await file.text();
+      state.observations = [];
+      state.currStats = null;
+      $("validCount").textContent = "0";
+      $("excludedCount").textContent = "0";
+      $("avgSpeed").textContent = "—";
+      $("avgDir").textContent = "—";
+      $("qualityRows").innerHTML = `<tr><td>JSON</td><td>${file.name}</td><td><span class="badge warn">pronto da leggere</span></td></tr>`;
+      buildReport();
     });
 
     $("imageFiles").addEventListener("change", (event) => {
@@ -816,9 +904,9 @@ ${bias}
       $("gallery").innerHTML = state.images.map(img => `<div class="thumb"><img src="${img.url}" alt="${img.name}"><small>${img.name}</small></div>`).join("");
     });
 
-    $("analyzeBtn").addEventListener("click", analyze);
+    $("analyzeBtn").addEventListener("click", processCurrWindNavJson);
     $("downloadBtn").addEventListener("click", () => {
-      analyze();
+      if (state.jsonText) processCurrWindNavJson();
       const blob = new Blob([$("report").textContent], { type: "text/markdown;charset=utf-8" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
@@ -831,7 +919,8 @@ ${bias}
       $("lat").value = Number(lat).toFixed(4);
       $("lon").value = Number(lon).toFixed(4);
       if (locationMap) updateMapMarker(options.pan !== false);
-      analyze();
+      if (state.jsonText) processCurrWindNavJson();
+      else buildReport();
     }
 
     function updateMapMarker(pan = false) {
@@ -917,9 +1006,9 @@ ${bias}
       setCoordinates(lat, lon, { pan: false });
     }
 
-    $("lat").addEventListener("change", () => { if (locationMap) updateMapMarker(true); analyze(); });
-    $("lon").addEventListener("change", () => { if (locationMap) updateMapMarker(true); analyze(); });
-    $("radius").addEventListener("change", () => { if (locationMap) updateMapMarker(false); analyze(); });
+    $("lat").addEventListener("change", () => { if (locationMap) updateMapMarker(true); if (state.jsonText) processCurrWindNavJson(); else buildReport(); });
+    $("lon").addEventListener("change", () => { if (locationMap) updateMapMarker(true); if (state.jsonText) processCurrWindNavJson(); else buildReport(); });
+    $("radius").addEventListener("change", () => { if (locationMap) updateMapMarker(false); });
     $("presetDunLaoghaire").addEventListener("click", () => {
       $("venue").value = "ILCA Worlds · Dún Laoghaire";
       setCoordinates(53.3238, -6.1337, { pan: true });
@@ -968,7 +1057,6 @@ ${bias}
     });
 
     buildReport();
-    analyze();
   </script>
 </body>
 </html>

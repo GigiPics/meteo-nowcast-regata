@@ -11,7 +11,7 @@ SCOPO
 La web app serve per usare da computer o smartphone gli aggiornamenti meteo di campo:
 - caricamento JSON con rilevamenti o dati CurrWindNav;
 - filtro automatico dei punti dentro la race area;
-- confronto rapido con la previsione di base;
+- verifica dei rilevamenti CurrWindNav entro 10 NM dal centro campo;
 - caricamento immagini di update meteo;
 - generazione di un riepilogo operativo esportabile.
 
@@ -43,10 +43,13 @@ USO OPERATIVO
 6. Incollare o aggiornare la previsione attesa nel campo "Previsione di base".
 7. Caricare il file JSON dei rilevamenti.
 8. Caricare eventuali immagini di update meteo: PredictWind, radar, cloud, onde, screenshot dal campo.
-9. Premere "Aggiorna nowcast".
+9. Premere "Leggi JSON CurrWindNav 10 NM".
 10. Controllare:
    - punti validi;
    - punti esclusi;
+   - duplicati rimossi;
+   - record senza coordinate;
+   - record fuori 10 NM;
    - intensità media;
    - direzione media;
    - controllo qualità.
@@ -60,9 +63,22 @@ Quando si apre la mappa, il cerchio visualizzato rappresenta il raggio filtro se
 Se la mappa non è disponibile, la app resta utilizzabile con coordinate manuali e pulsanti di regolazione.
 
 FILTRO SPAZIALE
-Il filtro standard è 10 NM dal centro campo.
-I punti oltre il raggio selezionato vengono esclusi dal confronto.
-Questo segue la regola operativa impostata per evitare che dati fuori bacino influenzino la previsione locale.
+La verifica JSON CurrWindNav usa sempre 10 NM dal centro campo.
+Il selettore "raggio visuale" serve solo per visualizzare il cerchio sulla mappa.
+I punti oltre 10 NM vengono esclusi dalla verifica, anche se il raggio visuale è diverso.
+Questo segue la regola operativa della skill meteo per evitare che dati fuori bacino influenzino la previsione locale.
+
+LETTURA JSON CURRWINDNAV
+Il pulsante "Leggi JSON CurrWindNav 10 NM" applica questa procedura:
+- legge il JSON completo;
+- decodifica anche eventuali oggetti JSON salvati come stringa;
+- usa solo record con coordinate geografiche valide;
+- per vento usa lat/lon;
+- per corrente/deriva usa midLat/midLon quando presenti, altrimenti il punto medio fra lat1/lon1 e lat2/lon2;
+- deduplica i record;
+- scarta record senza coordinate;
+- scarta record oltre 10 NM dal centro campo;
+- riporta conteggio grezzo, duplicati, senza coordinate, fuori 10 NM e validi finali.
 
 INTERPRETAZIONE DEI DATI
 La web app prova a riconoscere i campi più comuni:
