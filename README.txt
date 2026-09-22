@@ -26,22 +26,32 @@ USO OPERATIVO
    Di default è impostato su:
    ILCA Worlds - Dún Laoghaire
    centro race area: 53.3238 N, 6.1337 W
-3. Se necessario modificare:
+3. Se necessario modificare il centro race area usando la mappa:
+   - zoomare sulla località;
+   - toccare/cliccare il centro del campo;
+   - latitudine e longitudine vengono compilate automaticamente.
+4. In alternativa, modificare manualmente:
    - latitudine;
    - longitudine;
    - raggio filtro;
    - ora partenza.
-4. Incollare o aggiornare la previsione attesa nel campo "Previsione di base".
-5. Caricare il file JSON dei rilevamenti.
-6. Caricare eventuali immagini di update meteo: PredictWind, radar, cloud, onde, screenshot dal campo.
-7. Premere "Aggiorna nowcast".
-8. Controllare:
+5. Incollare o aggiornare la previsione attesa nel campo "Previsione di base".
+6. Caricare il file JSON dei rilevamenti.
+7. Caricare eventuali immagini di update meteo: PredictWind, radar, cloud, onde, screenshot dal campo.
+8. Premere "Aggiorna nowcast".
+9. Controllare:
    - punti validi;
    - punti esclusi;
    - intensità media;
    - direzione media;
    - controllo qualità.
-9. Scaricare il riepilogo con "Scarica riepilogo".
+10. Scaricare il riepilogo con "Scarica riepilogo".
+
+MAPPA
+La mappa usa OpenStreetMap e permette di fissare il centro campo con un click/tap.
+Il marker è trascinabile.
+Il cerchio visualizzato rappresenta il raggio filtro selezionato.
+Se la mappa non è disponibile, si possono inserire latitudine e longitudine manualmente.
 
 FILTRO SPAZIALE
 Il filtro standard è 10 NM dal centro campo.

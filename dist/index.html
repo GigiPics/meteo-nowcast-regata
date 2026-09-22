@@ -6,6 +6,7 @@
   <title>Meteo Nowcast Regata</title>
   <meta name="description" content="Nowcasting operativo per regate: ingest JSON, confronto previsione-rilevamenti, immagini update e report sintetico." />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23072b46'/%3E%3Cpath d='M14 45c9-18 20-27 36-29-7 9-11 20-10 32-9-5-17-5-26-3z' fill='%2309c2d8'/%3E%3Cpath d='M18 48c10-4 19-3 29 2' stroke='%23ffffff' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQjcH+g0aI7kGAtj3ypGkF5b8pdu0dE=" crossorigin="">
   <style>
     :root {
       color-scheme: light;
@@ -96,6 +97,36 @@
       font-size: .86rem;
     }
     .help-list li { margin: 4px 0; }
+    .map-picker {
+      margin: 14px 0 4px;
+      border: 1px solid #c9d8e4;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #d8eef6;
+    }
+    #locationMap {
+      height: 300px;
+      min-height: 300px;
+      width: 100%;
+    }
+    .map-picker-footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,.92);
+      border-top: 1px solid var(--line);
+    }
+    .map-picker-footer small {
+      color: var(--muted);
+      font-size: .82rem;
+    }
+    .map-picker-footer button {
+      padding: 8px 10px;
+      font-size: .86rem;
+    }
     input, textarea, select, button {
       font: inherit;
       border-radius: 12px;
@@ -252,6 +283,15 @@
           <label for="venue">Venue / evento</label>
           <input id="venue" value="ILCA Worlds · Dún Laoghaire" aria-describedby="venueHelp" />
           <p class="field-help" id="venueHelp"><strong>Cosa inserire:</strong> nome evento, classe e località. Verrà riportato nel riepilogo esportabile.</p>
+          <label for="locationMap">Centro race area sulla mappa</label>
+          <div class="map-picker">
+            <div id="locationMap" aria-label="Mappa per selezionare il centro della race area"></div>
+            <div class="map-picker-footer">
+              <small>Tocca o clicca sulla mappa per fissare il centro campo. Il cerchio segue il raggio filtro scelto.</small>
+              <button type="button" class="secondary" id="resetDunLaoghaire">Preset Dún Laoghaire</button>
+            </div>
+          </div>
+          <p class="field-help"><strong>Uso rapido:</strong> cerca visivamente la venue, zooma sul campo, poi tocca il centro race area. Latitudine e longitudine si compilano da sole.</p>
           <div class="row">
             <div>
               <label for="lat">Centro race area · lat</label>
@@ -383,11 +423,15 @@
     </div>
   </main>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
     const state = { observations: [], images: [], lastFileName: "" };
     const $ = (id) => document.getElementById(id);
     const toRad = d => d * Math.PI / 180;
     const toDeg = r => (r * 180 / Math.PI + 360) % 360;
+    let locationMap;
+    let locationMarker;
+    let radiusCircle;
 
     function haversineNm(aLat, aLon, bLat, bLon) {
       const Rkm = 6371;
@@ -469,6 +513,7 @@
       $("avgSpeed").textContent = avgRaw === null ? "—" : `${avgRaw.toFixed(1)} ${unit}${avgKt !== null && unit === "m/min" ? ` / ${avgKt.toFixed(2)} kt` : ""}`;
       $("avgDir").textContent = meanDir === null ? "—" : `${meanDir}°`;
       $("windArrow").style.transform = `rotate(${(meanDir ?? 120) + 180}deg)`;
+      updateMapMarker(false);
 
       if (!state.lastFileName) {
         rows.push(["JSON", "Nessun file caricato", "in attesa", "warn"]);
@@ -548,6 +593,67 @@ ${bias}
       setTimeout(() => URL.revokeObjectURL(a.href), 1000);
     });
 
+    function setCoordinates(lat, lon, options = {}) {
+      $("lat").value = Number(lat).toFixed(4);
+      $("lon").value = Number(lon).toFixed(4);
+      updateMapMarker(options.pan !== false);
+      analyze();
+    }
+
+    function updateMapMarker(pan = false) {
+      if (!locationMap || !window.L) return;
+      const lat = Number($("lat").value);
+      const lon = Number($("lon").value);
+      if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
+      const point = [lat, lon];
+      const radiusM = Number($("radius").value || 10) * 1852;
+      if (!locationMarker) {
+        locationMarker = L.marker(point, { draggable: true }).addTo(locationMap);
+        locationMarker.on("dragend", () => {
+          const next = locationMarker.getLatLng();
+          setCoordinates(next.lat, next.lng, { pan: false });
+        });
+      } else {
+        locationMarker.setLatLng(point);
+      }
+      if (!radiusCircle) {
+        radiusCircle = L.circle(point, {
+          radius: radiusM,
+          color: "#04b8cf",
+          weight: 2,
+          fillColor: "#04b8cf",
+          fillOpacity: 0.12
+        }).addTo(locationMap);
+      } else {
+        radiusCircle.setLatLng(point);
+        radiusCircle.setRadius(radiusM);
+      }
+      if (pan) locationMap.setView(point, Math.max(locationMap.getZoom(), 10));
+    }
+
+    function initLocationMap() {
+      if (!window.L || !$("locationMap")) {
+        $("locationMap").innerHTML = "<p style='padding:16px;margin:0;background:#fff'>Mappa non disponibile: inserisci latitudine e longitudine manualmente.</p>";
+        return;
+      }
+      const lat = Number($("lat").value);
+      const lon = Number($("lon").value);
+      locationMap = L.map("locationMap", { scrollWheelZoom: true }).setView([lat, lon], 11);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 18,
+        attribution: "&copy; OpenStreetMap"
+      }).addTo(locationMap);
+      locationMap.on("click", (event) => setCoordinates(event.latlng.lat, event.latlng.lng, { pan: false }));
+      updateMapMarker(false);
+      setTimeout(() => locationMap.invalidateSize(), 100);
+    }
+
+    $("lat").addEventListener("change", () => { updateMapMarker(true); analyze(); });
+    $("lon").addEventListener("change", () => { updateMapMarker(true); analyze(); });
+    $("radius").addEventListener("change", () => { updateMapMarker(false); analyze(); });
+    $("resetDunLaoghaire").addEventListener("click", () => setCoordinates(53.3238, -6.1337, { pan: true }));
+
+    initLocationMap();
     buildReport();
     analyze();
   </script>
