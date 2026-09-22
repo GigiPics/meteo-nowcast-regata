@@ -26,32 +26,38 @@ USO OPERATIVO
    Di default è impostato su:
    ILCA Worlds - Dún Laoghaire
    centro race area: 53.3238 N, 6.1337 W
-3. Se necessario modificare il centro race area usando la mappa:
-   - zoomare sulla località;
-   - toccare/cliccare il centro del campo;
-   - latitudine e longitudine vengono compilate automaticamente.
-4. In alternativa, modificare manualmente:
+3. Se necessario modificare il centro race area usando il metodo rapido:
+   - selezionare un preset, per esempio Dún Laoghaire o Vilamoura;
+   - oppure usare il GPS del telefono;
+   - rifinire il punto con i pulsanti Nord/Sud/Est/Ovest;
+   - usare il tasto "Fine" per micro-regolazioni più piccole.
+4. In alternativa, aprire la mappa solo se serve:
+   - la mappa usa OpenStreetMap;
+   - viene caricata solo su richiesta per non rallentare il telefono;
+   - il marker è trascinabile.
+5. È sempre possibile modificare manualmente:
    - latitudine;
    - longitudine;
    - raggio filtro;
    - ora partenza.
-5. Incollare o aggiornare la previsione attesa nel campo "Previsione di base".
-6. Caricare il file JSON dei rilevamenti.
-7. Caricare eventuali immagini di update meteo: PredictWind, radar, cloud, onde, screenshot dal campo.
-8. Premere "Aggiorna nowcast".
-9. Controllare:
+6. Incollare o aggiornare la previsione attesa nel campo "Previsione di base".
+7. Caricare il file JSON dei rilevamenti.
+8. Caricare eventuali immagini di update meteo: PredictWind, radar, cloud, onde, screenshot dal campo.
+9. Premere "Aggiorna nowcast".
+10. Controllare:
    - punti validi;
    - punti esclusi;
    - intensità media;
    - direzione media;
    - controllo qualità.
-10. Scaricare il riepilogo con "Scarica riepilogo".
+11. Scaricare il riepilogo con "Scarica riepilogo".
 
 MAPPA
-La mappa usa OpenStreetMap e permette di fissare il centro campo con un click/tap.
-Il marker è trascinabile.
-Il cerchio visualizzato rappresenta il raggio filtro selezionato.
-Se la mappa non è disponibile, si possono inserire latitudine e longitudine manualmente.
+La mappa è opzionale.
+È stata resa secondaria perché su mobile può risultare lenta o poco precisa con connessione debole.
+Il metodo consigliato è preset/GPS + micro-regolazioni.
+Quando si apre la mappa, il cerchio visualizzato rappresenta il raggio filtro selezionato.
+Se la mappa non è disponibile, la app resta utilizzabile con coordinate manuali e pulsanti di regolazione.
 
 FILTRO SPAZIALE
 Il filtro standard è 10 NM dal centro campo.

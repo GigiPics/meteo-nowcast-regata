@@ -6,7 +6,6 @@
   <title>Meteo Nowcast Regata</title>
   <meta name="description" content="Nowcasting operativo per regate: ingest JSON, confronto previsione-rilevamenti, immagini update e report sintetico." />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23072b46'/%3E%3Cpath d='M14 45c9-18 20-27 36-29-7 9-11 20-10 32-9-5-17-5-26-3z' fill='%2309c2d8'/%3E%3Cpath d='M18 48c10-4 19-3 29 2' stroke='%23ffffff' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQjcH+g0aI7kGAtj3ypGkF5b8pdu0dE=" crossorigin="">
   <style>
     :root {
       color-scheme: light;
@@ -105,6 +104,55 @@
       border-radius: 18px;
       overflow: hidden;
       background: #d8eef6;
+    }
+    .quick-location {
+      margin: 14px 0;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #f7fbfd;
+      padding: 12px;
+    }
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .quick-actions button,
+    .nudge-grid button {
+      color: var(--ink);
+      background: #e7f0f7;
+      padding: 10px;
+    }
+    .quick-actions button.primary-lite {
+      color: #052538;
+      background: #c9f3f8;
+    }
+    .nudge-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .nudge-grid .empty {
+      visibility: hidden;
+    }
+    .map-toggle {
+      margin-top: 10px;
+      width: 100%;
+      color: #052538;
+      background: #d8eef6;
+    }
+    .map-picker[hidden] {
+      display: none;
+    }
+    .map-placeholder {
+      padding: 16px;
+      background: linear-gradient(145deg, #d8eef6, #f7fbfd);
+      color: var(--muted);
+      min-height: 110px;
+      display: grid;
+      place-items: center;
+      text-align: center;
     }
     #locationMap {
       height: 300px;
@@ -316,6 +364,20 @@
         height: 245px;
         min-height: 245px;
       }
+      .quick-location {
+        border-radius: 14px;
+        padding: 10px;
+      }
+      .quick-actions,
+      .nudge-grid {
+        gap: 7px;
+      }
+      .quick-actions button,
+      .nudge-grid button,
+      .map-toggle {
+        min-height: 42px;
+        padding: 9px;
+      }
       .map-picker {
         border-radius: 14px;
       }
@@ -430,15 +492,37 @@
           <label for="venue">Venue / evento</label>
           <input id="venue" value="ILCA Worlds · Dún Laoghaire" aria-describedby="venueHelp" />
           <p class="field-help" id="venueHelp"><strong>Cosa inserire:</strong> nome evento, classe e località. Verrà riportato nel riepilogo esportabile.</p>
-          <label for="locationMap">Centro race area sulla mappa</label>
-          <div class="map-picker">
-            <div id="locationMap" aria-label="Mappa per selezionare il centro della race area"></div>
+          <label>Centro race area · rapido</label>
+          <div class="quick-location">
+            <div class="quick-actions">
+              <button type="button" class="primary-lite" id="presetDunLaoghaire">Dún Laoghaire</button>
+              <button type="button" class="primary-lite" id="presetVilamoura">Vilamoura</button>
+              <button type="button" id="useGps">Usa GPS telefono</button>
+              <button type="button" id="copyCoords">Copia coordinate</button>
+            </div>
+            <div class="nudge-grid" aria-label="Micro regolazione coordinate">
+              <span class="empty"></span>
+              <button type="button" data-nudge-lat="0.001">+ Nord</button>
+              <span class="empty"></span>
+              <button type="button" data-nudge-lon="-0.001">- Ovest</button>
+              <button type="button" data-nudge-step="0.0002">Fine ±</button>
+              <button type="button" data-nudge-lon="0.001">+ Est</button>
+              <span class="empty"></span>
+              <button type="button" data-nudge-lat="-0.001">- Sud</button>
+              <span class="empty"></span>
+            </div>
+            <button type="button" class="map-toggle" id="showMap">Apri mappa solo se serve</button>
+            <p class="field-help"><strong>Metodo consigliato:</strong> scegli un preset o usa GPS, poi rifinisci con Nord/Sud/Est/Ovest. È più veloce e preciso della mappa su mobile.</p>
+          </div>
+          <div class="map-picker" id="mapPanel" hidden>
+            <div id="locationMap" aria-label="Mappa opzionale per selezionare il centro della race area">
+              <div class="map-placeholder">Mappa opzionale. Carico OpenStreetMap solo quando la apri.</div>
+            </div>
             <div class="map-picker-footer">
-              <small>Tocca o clicca sulla mappa per fissare il centro campo. Il cerchio segue il raggio filtro scelto.</small>
-              <button type="button" class="secondary" id="resetDunLaoghaire">Preset Dún Laoghaire</button>
+              <small>La mappa è solo supporto visivo. Per precisione usa marker trascinabile o micro-regolazioni.</small>
+              <button type="button" class="secondary" id="closeMap">Chiudi mappa</button>
             </div>
           </div>
-          <p class="field-help"><strong>Uso rapido:</strong> cerca visivamente la venue, zooma sul campo, poi tocca il centro race area. Latitudine e longitudine si compilano da sole.</p>
           <div class="row">
             <div>
               <label for="lat">Centro race area · lat</label>
@@ -572,7 +656,6 @@
     </div>
   </main>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
     const state = { observations: [], images: [], lastFileName: "" };
     const $ = (id) => document.getElementById(id);
@@ -581,6 +664,8 @@
     let locationMap;
     let locationMarker;
     let radiusCircle;
+    let leafletPromise;
+    let nudgeStep = 0.001;
 
     function haversineNm(aLat, aLon, bLat, bLon) {
       const Rkm = 6371;
@@ -662,7 +747,7 @@
       $("avgSpeed").textContent = avgRaw === null ? "—" : `${avgRaw.toFixed(1)} ${unit}${avgKt !== null && unit === "m/min" ? ` / ${avgKt.toFixed(2)} kt` : ""}`;
       $("avgDir").textContent = meanDir === null ? "—" : `${meanDir}°`;
       $("windArrow").style.transform = `rotate(${(meanDir ?? 120) + 180}deg)`;
-      updateMapMarker(false);
+      if (locationMap) updateMapMarker(false);
 
       if (!state.lastFileName) {
         rows.push(["JSON", "Nessun file caricato", "in attesa", "warn"]);
@@ -745,7 +830,7 @@ ${bias}
     function setCoordinates(lat, lon, options = {}) {
       $("lat").value = Number(lat).toFixed(4);
       $("lon").value = Number(lon).toFixed(4);
-      updateMapMarker(options.pan !== false);
+      if (locationMap) updateMapMarker(options.pan !== false);
       analyze();
     }
 
@@ -780,14 +865,43 @@ ${bias}
       if (pan) locationMap.setView(point, Math.max(locationMap.getZoom(), 10));
     }
 
-    function initLocationMap() {
-      if (!window.L || !$("locationMap")) {
+    function loadLeaflet() {
+      if (window.L) return Promise.resolve();
+      if (leafletPromise) return leafletPromise;
+      leafletPromise = new Promise((resolve, reject) => {
+        const css = document.createElement("link");
+        css.rel = "stylesheet";
+        css.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+        css.crossOrigin = "";
+        document.head.appendChild(css);
+        const script = document.createElement("script");
+        script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+        script.crossOrigin = "";
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error("Leaflet non disponibile"));
+        document.body.appendChild(script);
+      });
+      return leafletPromise;
+    }
+
+    async function initLocationMap() {
+      $("mapPanel").hidden = false;
+      $("locationMap").innerHTML = "<div class='map-placeholder'>Caricamento mappa…</div>";
+      try {
+        await loadLeaflet();
+      } catch {
         $("locationMap").innerHTML = "<p style='padding:16px;margin:0;background:#fff'>Mappa non disponibile: inserisci latitudine e longitudine manualmente.</p>";
+        return;
+      }
+      if (locationMap) {
+        updateMapMarker(true);
+        setTimeout(() => locationMap.invalidateSize(), 100);
         return;
       }
       const lat = Number($("lat").value);
       const lon = Number($("lon").value);
-      locationMap = L.map("locationMap", { scrollWheelZoom: true }).setView([lat, lon], 11);
+      $("locationMap").innerHTML = "";
+      locationMap = L.map("locationMap", { scrollWheelZoom: false, tap: true }).setView([lat, lon], 11);
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 18,
         attribution: "&copy; OpenStreetMap"
@@ -797,12 +911,62 @@ ${bias}
       setTimeout(() => locationMap.invalidateSize(), 100);
     }
 
-    $("lat").addEventListener("change", () => { updateMapMarker(true); analyze(); });
-    $("lon").addEventListener("change", () => { updateMapMarker(true); analyze(); });
-    $("radius").addEventListener("change", () => { updateMapMarker(false); analyze(); });
-    $("resetDunLaoghaire").addEventListener("click", () => setCoordinates(53.3238, -6.1337, { pan: true }));
+    function nudge(latDelta = 0, lonDelta = 0) {
+      const lat = Number($("lat").value) + latDelta;
+      const lon = Number($("lon").value) + lonDelta;
+      setCoordinates(lat, lon, { pan: false });
+    }
 
-    initLocationMap();
+    $("lat").addEventListener("change", () => { if (locationMap) updateMapMarker(true); analyze(); });
+    $("lon").addEventListener("change", () => { if (locationMap) updateMapMarker(true); analyze(); });
+    $("radius").addEventListener("change", () => { if (locationMap) updateMapMarker(false); analyze(); });
+    $("presetDunLaoghaire").addEventListener("click", () => {
+      $("venue").value = "ILCA Worlds · Dún Laoghaire";
+      setCoordinates(53.3238, -6.1337, { pan: true });
+    });
+    $("presetVilamoura").addEventListener("click", () => {
+      $("venue").value = "Youth Worlds · Vilamoura";
+      setCoordinates(37.0730, -8.1300, { pan: true });
+    });
+    $("showMap").addEventListener("click", initLocationMap);
+    $("closeMap").addEventListener("click", () => { $("mapPanel").hidden = true; });
+    $("useGps").addEventListener("click", () => {
+      if (!navigator.geolocation) {
+        alert("GPS non disponibile su questo dispositivo/browser.");
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        (pos) => setCoordinates(pos.coords.latitude, pos.coords.longitude, { pan: true }),
+        () => alert("Non riesco a leggere la posizione. Verifica i permessi GPS del browser."),
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 }
+      );
+    });
+    $("copyCoords").addEventListener("click", async () => {
+      const text = `${$("lat").value}, ${$("lon").value}`;
+      try {
+        await navigator.clipboard.writeText(text);
+        $("copyCoords").textContent = "Copiate";
+        setTimeout(() => $("copyCoords").textContent = "Copia coordinate", 1200);
+      } catch {
+        alert(text);
+      }
+    });
+    document.querySelectorAll("[data-nudge-lat], [data-nudge-lon]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const latDelta = Number(button.dataset.nudgeLat || 0);
+        const lonDelta = Number(button.dataset.nudgeLon || 0);
+        nudge(latDelta, lonDelta);
+      });
+    });
+    document.querySelector("[data-nudge-step]").addEventListener("click", (event) => {
+      nudgeStep = nudgeStep === 0.001 ? 0.0002 : 0.001;
+      event.currentTarget.textContent = nudgeStep === 0.001 ? "Fine ±" : "Normale ±";
+      document.querySelectorAll("[data-nudge-lat], [data-nudge-lon]").forEach((button) => {
+        if (button.dataset.nudgeLat) button.dataset.nudgeLat = String(Math.sign(Number(button.dataset.nudgeLat)) * nudgeStep);
+        if (button.dataset.nudgeLon) button.dataset.nudgeLon = String(Math.sign(Number(button.dataset.nudgeLon)) * nudgeStep);
+      });
+    });
+
     buildReport();
     analyze();
   </script>
