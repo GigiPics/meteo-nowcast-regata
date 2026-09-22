@@ -82,6 +82,20 @@
     .hint { color: var(--muted); margin: 4px 0 0; font-size: .92rem; }
     .body { padding: 18px 20px 20px; }
     label { display: block; font-weight: 750; font-size: .92rem; margin: 14px 0 6px; }
+    .field-help {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: .86rem;
+      line-height: 1.35;
+    }
+    .field-help strong { color: var(--ink); }
+    .help-list {
+      margin: 8px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: .86rem;
+    }
+    .help-list li { margin: 4px 0; }
     input, textarea, select, button {
       font: inherit;
       border-radius: 12px;
@@ -236,45 +250,59 @@
         </div>
         <div class="body">
           <label for="venue">Venue / evento</label>
-          <input id="venue" value="ILCA Worlds · Dún Laoghaire" />
+          <input id="venue" value="ILCA Worlds · Dún Laoghaire" aria-describedby="venueHelp" />
+          <p class="field-help" id="venueHelp"><strong>Cosa inserire:</strong> nome evento, classe e località. Verrà riportato nel riepilogo esportabile.</p>
           <div class="row">
             <div>
               <label for="lat">Centro race area · lat</label>
-              <input id="lat" type="number" step="0.0001" value="53.3238" />
+              <input id="lat" type="number" step="0.0001" value="53.3238" aria-describedby="latHelp" />
+              <p class="field-help" id="latHelp"><strong>Latitudine centro campo:</strong> usa gradi decimali. Nord positivo, Sud negativo. Serve per filtrare i rilevamenti dentro la race area.</p>
             </div>
             <div>
               <label for="lon">Centro race area · lon</label>
-              <input id="lon" type="number" step="0.0001" value="-6.1337" />
+              <input id="lon" type="number" step="0.0001" value="-6.1337" aria-describedby="lonHelp" />
+              <p class="field-help" id="lonHelp"><strong>Longitudine centro campo:</strong> usa gradi decimali. Est positivo, Ovest negativo. Esempio Dún Laoghaire: -6.1337.</p>
             </div>
           </div>
           <div class="row">
             <div>
               <label for="radius">Raggio filtro</label>
-              <select id="radius">
+              <select id="radius" aria-describedby="radiusHelp">
                 <option value="10">10 NM · standard</option>
                 <option value="5">5 NM · campo stretto</option>
                 <option value="15">15 NM · baia larga</option>
               </select>
+              <p class="field-help" id="radiusHelp"><strong>Come usarlo:</strong> 10 NM è lo standard operativo. Usa 5 NM se vuoi solo il campo reale; 15 NM se vuoi includere tutta la baia.</p>
             </div>
             <div>
               <label for="raceTime">Ora partenza</label>
-              <input id="raceTime" value="12:00" />
+              <input id="raceTime" value="12:00" aria-describedby="raceTimeHelp" />
+              <p class="field-help" id="raceTimeHelp"><strong>Formato libero:</strong> es. 12:00, 11:30 warning, oppure finestra 10:00-16:00. Viene usata solo nel report.</p>
             </div>
           </div>
 
           <label for="forecast">Previsione attesa</label>
-          <textarea id="forecast">Vento previsto 110-130°M, 8-11 kt, raffiche 13-16 kt. Possibile calo progressivo nel pomeriggio. Onda/chop E 0.6-0.8 m, periodo 4 s. Corrente da verificare su boa/campo.</textarea>
+          <textarea id="forecast" aria-describedby="forecastHelp">Vento previsto 110-130°M, 8-11 kt, raffiche 13-16 kt. Possibile calo progressivo nel pomeriggio. Onda/chop E 0.6-0.8 m, periodo 4 s. Corrente da verificare su boa/campo.</textarea>
+          <p class="field-help" id="forecastHelp"><strong>Cosa scrivere:</strong> sintesi della previsione prima dell’uscita: direzione magnetica, intensità, raffiche, onda/chop, corrente e rischio principale. Il confronto con i rilevamenti serve a stimare il bias locale.</p>
 
           <div class="drop">
             <label for="jsonFile">Upload JSON rilevamenti / CurrWindNav</label>
-            <input id="jsonFile" type="file" accept=".json,application/json" />
-            <p class="hint">I punti fuori dal raggio vengono esclusi dal confronto.</p>
+            <input id="jsonFile" type="file" accept=".json,application/json" aria-describedby="jsonHelp" />
+            <p class="field-help" id="jsonHelp"><strong>File da caricare:</strong> esportazione JSON con lat/lon e, se disponibili, intensità e direzione. La app legge anche JSON annidati o campi salvati come stringa.</p>
+            <ul class="help-list">
+              <li>I punti fuori dal raggio selezionato vengono esclusi.</li>
+              <li>Usa questo dato per correggere la previsione successiva nello stesso regime.</li>
+            </ul>
           </div>
 
           <div class="drop">
             <label for="imageFiles">Upload immagini update meteo</label>
-            <input id="imageFiles" type="file" accept="image/*" multiple />
-            <p class="hint">Le immagini restano nella sessione del browser e servono per briefing rapido.</p>
+            <input id="imageFiles" type="file" accept="image/*" multiple aria-describedby="imageHelp" />
+            <p class="field-help" id="imageHelp"><strong>Cosa caricare:</strong> screenshot PredictWind/Windy, radar, cloud, onda, tavole modello o foto dal gommone. Servono come riferimento visivo nel briefing rapido.</p>
+            <ul class="help-list">
+              <li>In questa MVP le immagini restano nella sessione del browser.</li>
+              <li>Per ora non sono ancora archiviate online in modo permanente.</li>
+            </ul>
           </div>
 
           <div class="actions">
