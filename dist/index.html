@@ -23,6 +23,7 @@
       --shadow: 0 18px 50px rgba(5, 31, 52, .14);
     }
     * { box-sizing: border-box; }
+    html { overflow-x: hidden; }
     body {
       margin: 0;
       font: 16px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -31,6 +32,7 @@
         radial-gradient(circle at 20% -10%, rgba(4,184,207,.22), transparent 36rem),
         radial-gradient(circle at 100% 15%, rgba(244,167,29,.15), transparent 34rem),
         var(--bg);
+      overflow-x: hidden;
     }
     header {
       background: linear-gradient(135deg, #061e32, #0b4566);
@@ -137,6 +139,7 @@
       background: white;
       padding: 11px 12px;
       color: var(--ink);
+      min-width: 0;
     }
     textarea { min-height: 96px; resize: vertical; }
     button {
@@ -249,12 +252,156 @@
       font-size: .9rem;
       overflow: auto;
     }
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     @media (max-width: 980px) {
       header { position: static; align-items: flex-start; }
       .grid { grid-template-columns: 1fr; }
       .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .row { grid-template-columns: 1fr; }
       .status-pill { display: none; }
+    }
+    @media (max-width: 640px) {
+      header {
+        padding: 12px 14px;
+        gap: 10px;
+      }
+      .brand {
+        gap: 10px;
+        align-items: flex-start;
+      }
+      .brand img {
+        width: 42px;
+        border-radius: 8px;
+        padding: 4px;
+      }
+      .brand h1 {
+        font-size: 1.08rem;
+      }
+      .brand p {
+        font-size: .8rem;
+        line-height: 1.25;
+      }
+      main {
+        padding: 10px;
+      }
+      section, .card {
+        border-radius: 16px;
+      }
+      .section-head {
+        padding: 14px 14px 10px;
+      }
+      .body {
+        padding: 14px;
+      }
+      h2 {
+        font-size: 1rem;
+      }
+      label {
+        font-size: .9rem;
+        margin-top: 12px;
+      }
+      .field-help, .help-list {
+        font-size: .8rem;
+      }
+      input, textarea, select, button {
+        font-size: 16px;
+      }
+      input, textarea, select {
+        padding: 12px;
+      }
+      textarea {
+        min-height: 118px;
+      }
+      #locationMap {
+        height: 245px;
+        min-height: 245px;
+      }
+      .map-picker {
+        border-radius: 14px;
+      }
+      .map-picker-footer {
+        display: block;
+        padding: 10px;
+      }
+      .map-picker-footer button {
+        width: 100%;
+        margin-top: 8px;
+      }
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .actions button {
+        width: 100%;
+        min-height: 46px;
+      }
+      .drop {
+        border-radius: 14px;
+        padding: 12px;
+      }
+      .metrics {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .metric {
+        padding: 10px;
+        border-radius: 14px;
+      }
+      .metric span {
+        font-size: .74rem;
+      }
+      .metric strong {
+        font-size: 1.12rem;
+        line-height: 1.15;
+      }
+      .canvas {
+        min-height: 260px;
+      }
+      .race-circle {
+        width: min(72vw, 230px);
+      }
+      .wind-arrow {
+        width: 82px;
+      }
+      .map-label {
+        font-size: .72rem;
+        padding: 5px 7px;
+      }
+      .label-race {
+        left: 38%;
+        top: 22%;
+      }
+      .label-venue {
+        left: 8%;
+        bottom: 10%;
+      }
+      th, td {
+        padding: 9px 7px;
+        font-size: .84rem;
+      }
+      .gallery {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .thumb img {
+        height: 86px;
+      }
+      .report {
+        border-radius: 14px;
+        padding: 12px;
+        font-size: .8rem;
+        max-height: 360px;
+      }
+    }
+    @media (max-width: 380px) {
+      main { padding: 8px; }
+      .metrics { grid-template-columns: 1fr; }
+      .gallery { grid-template-columns: 1fr; }
+      #locationMap {
+        height: 220px;
+        min-height: 220px;
+      }
     }
   </style>
 </head>
@@ -387,12 +534,14 @@
             </div>
           </div>
           <div class="body">
-            <table>
-              <thead><tr><th>Voce</th><th>Valore</th><th>Stato</th></tr></thead>
-              <tbody id="qualityRows">
-                <tr><td>JSON</td><td>Nessun file caricato</td><td><span class="badge warn">in attesa</span></td></tr>
-              </tbody>
-            </table>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Voce</th><th>Valore</th><th>Stato</th></tr></thead>
+                <tbody id="qualityRows">
+                  <tr><td>JSON</td><td>Nessun file caricato</td><td><span class="badge warn">in attesa</span></td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </section>
 
