@@ -1,0 +1,130 @@
+{
+  "schema_version": "forecast_context.v1",
+  "kind": "daily_forecast",
+  "created_at": "2026-09-27T19:30:00+02:00",
+  "event": {
+    "name": "Test operativo nowcast app",
+    "class": "training / open class",
+    "venue": "Cagliari / Poetto, Sardinia, Italy",
+    "race_area": "Poetto provisional race area",
+    "valid_date": "2026-09-27",
+    "start_time_local": "11:00",
+    "time_window_local": {
+      "from": "11:00",
+      "to": "17:00"
+    },
+    "forecast_center": {
+      "lat": 39.195938,
+      "lon": 9.181625,
+      "source": "Poetto race-area test center"
+    }
+  },
+  "reliability": {
+    "overall": "medio-alta",
+    "wind": "medio-alta",
+    "wave": "media",
+    "current": "bassa senza rilevamenti diretti"
+  },
+  "wind": {
+    "central_speed_kn": "5-8",
+    "central_direction_deg": "150-170",
+    "central_direction_label": "SE-SSE",
+    "gusts_kn": "10-18",
+    "hourly": [
+      {
+        "h": "11:00",
+        "speed_kn": 4.7,
+        "direction_deg": 150,
+        "gust_kn": 9.7,
+        "ecmwf_speed_kn": 3.1,
+        "ecmwf_direction_deg": 158
+      },
+      {
+        "h": "12:00",
+        "speed_kn": 5.7,
+        "direction_deg": 156,
+        "gust_kn": 12.6,
+        "ecmwf_speed_kn": 4.9,
+        "ecmwf_direction_deg": 175
+      },
+      {
+        "h": "13:00",
+        "speed_kn": 6.8,
+        "direction_deg": 160,
+        "gust_kn": 15,
+        "ecmwf_speed_kn": 6.4,
+        "ecmwf_direction_deg": 183
+      },
+      {
+        "h": "14:00",
+        "speed_kn": 7.5,
+        "direction_deg": 170,
+        "gust_kn": 16.7,
+        "ecmwf_speed_kn": 7.6,
+        "ecmwf_direction_deg": 186
+      },
+      {
+        "h": "15:00",
+        "speed_kn": 8.3,
+        "direction_deg": 165,
+        "gust_kn": 17.7,
+        "ecmwf_speed_kn": 8,
+        "ecmwf_direction_deg": 180
+      },
+      {
+        "h": "16:00",
+        "speed_kn": 8.4,
+        "direction_deg": 158,
+        "gust_kn": 17.9,
+        "ecmwf_speed_kn": 7.9,
+        "ecmwf_direction_deg": 169
+      },
+      {
+        "h": "17:00",
+        "speed_kn": 8.3,
+        "direction_deg": 156,
+        "gust_kn": 17.9,
+        "ecmwf_speed_kn": 7.4,
+        "ecmwf_direction_deg": 160
+      }
+    ],
+    "rotations": "Sviluppo da SE verso SSE/S nel pomeriggio; controllare persistenza oltre 15-20 minuti.",
+    "spread": "accordo modello medio: scarto medio intensita 0.7 kt, direzione 14°"
+  },
+  "sea_state": {
+    "wave_height_m": "0.2-0.3",
+    "wave_direction": "126°",
+    "wave_period_s": "3-4.4",
+    "operational_note": "Chop corto da SE dentro il Golfo; gestibile ma progressivamente piu leggibile nel pomeriggio."
+  },
+  "tide_current": {
+    "current_expected": "non determinata da modello; usare CurrWindNav o rilevamento diretto",
+    "current_unit_rule": "m/min only for measured current",
+    "notes": "Non inferire corrente dalla sola marea astronomica nel nowcast."
+  },
+  "temperature": {
+    "air_c": "26-27",
+    "water_c": "27.1",
+    "water_source": "modellata Open-Meteo marine",
+    "stability": "mare piu caldo dell aria media: strato basso non stabile, possibili raffiche piu vive dove entra pressione"
+  },
+  "triggers": [
+    "Se il vento reale resta sotto 5 kt fino a tarda mattina, ritardare fiducia nello scenario centrale.",
+    "Se compare linea scura continua da SE-ESE, aspettarsi ingresso piu stabile 7-9 kt.",
+    "Persistenza rotazione verso 155-170° per 15-20 minuti = scenario pomeridiano confermato.",
+    "Chop corto in aumento oltre 0.2 m indica pressione piu continua lato aperto.",
+    "Divergenza costa/campo: dare priorita a CurrWindNav o osservazione in acqua entro 10 NM."
+  ],
+  "bias_applied": {
+    "source": "none",
+    "wind_speed_kn": 0,
+    "wind_direction_deg": 0,
+    "note": "Nessun nuovo JSON CurrWindNav Poetto usato per questa previsione di test."
+  },
+  "sources_meta": [
+    "Open-Meteo forecast API best_match + ECMWF IFS 0.25",
+    "Open-Meteo marine API",
+    "Venue KB Cagliari / Poetto in app/venues.json"
+  ],
+  "linked_report": "raw/2026-09-27_previsione_meteo_cagliari_poetto_2026-09-27.md"
+}

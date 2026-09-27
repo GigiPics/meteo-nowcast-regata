@@ -1,0 +1,60 @@
+{
+  "schema_version": "forecast_observed_comparison.v1",
+  "forecast_context": "C:\\Users\\gipic\\OneDrive\\Documenti\\Meteo\\meteo-bridge-app\\processed\\forecast-contexts\\2026-08-26_ilca_dun_laoghaire_forecast_context.json",
+  "observations": "C:\\Users\\gipic\\OneDrive\\Documenti\\Meteo\\meteo-bridge-app\\source\\APP_METEO_EV\\nav_2026-08-26 (1).json",
+  "event": {
+    "name": "ILCA 7 Men's World Championship",
+    "class": "ILCA 7",
+    "venue": "Dún Laoghaire, Dublin Bay, Ireland",
+    "race_area": "Race area ILCA / Centre-South",
+    "valid_date": "2026-08-26",
+    "start_time_local": "12:00",
+    "time_window_local": {
+      "pre_start": "11:30-12:00",
+      "race": "12:00-17:00"
+    },
+    "forecast_center": {
+      "lat": 53.3238,
+      "lon": -6.1337,
+      "source": "logbook/race-area-reference"
+    }
+  },
+  "stats": {
+    "radius_nm": 10,
+    "center": {
+      "lat": 53.3238,
+      "lon": -6.1337
+    },
+    "raw_wind": 5,
+    "raw_current": 9,
+    "decoded_wind": 5,
+    "decoded_current": 9,
+    "duplicates_removed": 0,
+    "no_coordinates": 0,
+    "out_of_range": 0,
+    "valid_wind": 5,
+    "valid_current": 9
+  },
+  "comparison": {
+    "forecast_baseline": {
+      "speed_kn_mid": 9.5,
+      "direction_deg_mid": 122.5,
+      "speed_range": "8-11",
+      "direction_range": "115-130"
+    },
+    "observed_wind": {
+      "n": 5,
+      "speed_kn_mean": 11.8,
+      "direction_deg_mean": 124
+    },
+    "observed_current": {
+      "n": 9,
+      "speed_m_min_mean": 6.9,
+      "direction_deg_from_mean": 63
+    },
+    "bias": {
+      "speed_kn": 2.3,
+      "direction_deg": 2
+    }
+  }
+}

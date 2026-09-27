@@ -1,0 +1,131 @@
+{
+  "schema_version": "forecast_context.v1",
+  "context_type": "official_forecast_from_legacy_report",
+  "created_at": "2026-09-23T00:00:00+02:00",
+  "source_report": {
+    "markdown_path": "C:/Users/gipic/OneDrive/Documenti/Meteo/raw/2026-08-25_previsione_regata_ilca_dun_laoghaire_2026-08-26.md",
+    "html_path": "C:/Users/gipic/OneDrive/Documenti/Meteo/raw/2026-08-25_previsione_regata_ilca_dun_laoghaire_2026-08-26.html",
+    "production_date": "2026-08-25",
+    "extraction_method": "manual_structuring_from_report",
+    "extraction_confidence": "high"
+  },
+  "event": {
+    "name": "ILCA 7 Men's World Championship",
+    "class": "ILCA 7",
+    "venue": "Dún Laoghaire, Dublin Bay, Ireland",
+    "race_area": "Race area ILCA / Centre-South",
+    "valid_date": "2026-08-26",
+    "start_time_local": "12:00",
+    "time_window_local": {
+      "pre_start": "11:30-12:00",
+      "race": "12:00-17:00"
+    },
+    "forecast_center": {
+      "lat": 53.3238,
+      "lon": -6.1337,
+      "source": "logbook/race-area-reference"
+    }
+  },
+  "reliability": {
+    "overall": "medio-alta su direzione; media su intensità; media su corrente",
+    "direction": "medio-alta",
+    "intensity": "media",
+    "current": "media"
+  },
+  "scenario": {
+    "summary": "Partenza alle 12:00 in vento medio-leggero da ESE/SE, abbastanza leggibile ma non forte. La prima prova dovrebbe cadere nella finestra migliore della giornata; rischio crescente nel pomeriggio per perdita di pressione e differenza lato aperto/lato costa.",
+    "central": "8-11 kt fra 12:00 e 15:00, poi 6-9 kt verso 16:00-17:00. Direzione centrale 115-130° magnetici.",
+    "low": "6-8 kt se pressione non entra compatta o se il vento reale alle 12:00 resta sotto 8 kt.",
+    "high": "12-13 kt solo se pressione entra compatta nella prima parte."
+  },
+  "wind": {
+    "direction_reference": "magnetic",
+    "unit": "kn",
+    "central_direction_deg": "115-130",
+    "central_speed_kn": "8-11",
+    "central_gust_kn": "13-16",
+    "trend": "abbastanza stabile 12:00-15:00, poi calo progressivo e possibile sinistra verso 100-110° dopo 17:00",
+    "hourly": [
+      {"time": "11:30", "speed_kn": "8-11", "gust_kn": "13-16", "direction_deg": "115-130", "note": "Pre-start; misurare corrente su linea; alta marea appena passata, ebb in avvio."},
+      {"time": "12:00", "speed_kn": "8-11", "gust_kn": "13-16", "direction_deg": "115-130", "note": "Finestra più solida; vento da ESE/SE leggibile sul lato aperto."},
+      {"time": "13:00", "speed_kn": "8-11", "gust_kn": "13-16", "direction_deg": "115-130", "note": "Buona continuità; controllare persistenza del 130°."},
+      {"time": "14:00", "speed_kn": "8-11", "gust_kn": "13-16", "direction_deg": "110-130", "note": "Possibile massima stabilità tattica, ma inizio calo in alcuni modelli."},
+      {"time": "15:00", "speed_kn": "8-10", "gust_kn": "12-15", "direction_deg": "110-130", "note": "Pressione meno piena; lato aperto/lato costa più rilevante."},
+      {"time": "16:00", "speed_kn": "6-9", "gust_kn": "10-14", "direction_deg": "110-130", "note": "Rischio buchi e prove più delicate."},
+      {"time": "17:00", "speed_kn": "6-9", "gust_kn": "9-13", "direction_deg": "100-120", "note": "Calo progressivo; possibile rotazione sinistra."}
+    ],
+    "model_reading": {
+      "ranking_note": "Scenario centrale pesa ICON/UKMO/ECMWF/GFS/AROME secondo ranking locale, non i soli PWG/PWE.",
+      "high_models": "UKMO/AROME/PWG/PWE 11-13 kt prima parte",
+      "low_models": "GFS/ICON/PWAi/AIFS 6-8 kt",
+      "ecmwf": "9-10 kt iniziali, poi 8 kt"
+    }
+  },
+  "race_area_effects": {
+    "main": "Con ESE/SE la race area Centre/South riceve vento dal lato aperto della baia, con angolo più meridionale rispetto al giorno precedente.",
+    "local_differences": [
+      "lato aperto prioritario per leggere pressione e ingresso bande",
+      "lato costa meno pieno se vento sotto 8 kt",
+      "con 120-130° chop meno frontale rispetto a ENE puro, ma corto",
+      "se campo spostato verso Salthill/South aumenta rilevanza costa/aperto"
+    ]
+  },
+  "sea": {
+    "type": "onda corta gestibile",
+    "wave_reference": "Open-Meteo Marine",
+    "hourly": [
+      {"time": "12:00", "height_m": 0.68, "direction_deg": 89, "period_s": 4.0},
+      {"time": "14:00", "height_m": 0.62, "direction_deg": 91, "period_s": 3.9},
+      {"time": "16:00", "height_m": 0.56, "direction_deg": 92, "period_s": 3.85}
+    ],
+    "wind_wave_m": "0.16-0.36",
+    "operational_note": "Mare non duro ma presente; può influenzare accelerazione e uscita virata sotto 8 kt."
+  },
+  "temperature_stability": {
+    "air_c": "16-18",
+    "water_c": "17.5-17.8",
+    "water_temp_source": "stimata/modellata da report",
+    "boundary_layer": "quasi neutro",
+    "effect": "non aspettarsi rinforzo termico netto"
+  },
+  "tide_current": {
+    "tide": [
+      {"type": "high", "time": "11:28", "height_m": 3.6},
+      {"type": "low", "time": "17:05", "height_m": 1.2}
+    ],
+    "phase_during_race": "ebb",
+    "current_bias_from_previous_json": "0.2-0.4 kt after HW in regime orientale",
+    "current_operational_note": "Corrente non dominante ma sufficiente a incidere su linea, layline e laymark; misurare RC/linea e prima bolina."
+  },
+  "weather_risk": {
+    "rain": "debole possibile ma marginale, 0.1-0.2 mm/h in alcuni modelli",
+    "cloud": "nuvolosità alta/estesa fino a metà pomeriggio",
+    "cape": "basso",
+    "lightning": "0",
+    "thunderstorm_trigger": "nessun segnale chiaro",
+    "pressure": "circa 1012 hPa, quasi piatta con debole calo"
+  },
+  "triggers": [
+    "Alle 11:30 misurare vento reale su linea e lato aperto: se <8 kt, partire con scenario basso.",
+    "Se alle 12:00 vento reale >=10 kt e continuo, scenario centrale alto confermato per prima prova.",
+    "Se alle 12:00 vento reale <8 kt, aspettarsi giornata tattica e possibile calo anticipato.",
+    "Se direzione resta 125-135° per 15-20 minuti, leggere campo come ESE/SE stabile.",
+    "Se compare 100-110° persistente dopo le 15:00, rotazione sinistra/calo in atto.",
+    "Se lato costa appare lucido o bucato, non trasferire automaticamente pressione vista lato aperto.",
+    "Dopo HW misurare corrente su linea e bolina: baseline 0.2-0.4 kt, conferma necessaria."
+  ],
+  "nowcast_use": {
+    "role": "official_starting_forecast",
+    "compare_with": [
+      "direct_currwindnav_json_within_10_nm",
+      "weather_table_screenshots",
+      "manual_observations"
+    ],
+    "bias_rules": [
+      "Usare scarti osservati solo per stesso bacino/campo/regime.",
+      "Mantenere separati previsione, osservazioni, screenshot e inferenze.",
+      "Se JSON osservato conferma vento <8 kt alle 12:00, abbassare scenario successivo.",
+      "Se JSON osservato conferma 125-135° stabile per 15-20 minuti, mantenere ESE/SE come asse tattico."
+    ]
+  }
+}

@@ -1,0 +1,191 @@
+{
+  "type": "currwind_export",
+  "version": 1,
+  "meta": {
+    "event": "",
+    "campo": "",
+    "localita": "Dun Laoghaire",
+    "scope": "all",
+    "owner": "all",
+    "owner_coach": null,
+    "owner_localita": null,
+    "owner_radius_km": null,
+    "period": "today",
+    "from": "2026-08-26",
+    "to": "2026-08-26",
+    "dir_convention": "from",
+    "dir_ref": "magnetic",
+    "current_dir_ref": "magnetic",
+    "wind_dir_ref": "magnetic",
+    "speed_unit": "mt_min",
+    "wind_speed_unit": "kn"
+  },
+  "markers": [],
+  "measurements": [
+    {
+      "ts": "2026-08-26T11:06:53+01:00",
+      "lat": 53.312405,
+      "lon": -6.135835,
+      "dir": 112,
+      "decl": -1.1,
+      "speed": 5,
+      "coach": "EV",
+      "localita": "Dun Laoghaire",
+      "zona": "LR",
+      "note": ""
+    },
+    {
+      "ts": "2026-08-26T11:12:58+01:00",
+      "lat": 53.318093,
+      "lon": -6.12621,
+      "dir": 50,
+      "decl": -1.1,
+      "speed": 9,
+      "coach": "EV",
+      "localita": "Dun Laoghaire",
+      "zona": "UP",
+      "note": ""
+    },
+    {
+      "ts": "2026-08-26T11:14:36+01:00",
+      "lat": 53.322999,
+      "lon": -6.140555,
+      "dir": 108,
+      "decl": -1.1,
+      "speed": 8,
+      "coach": "ES",
+      "localita": "Dublino",
+      "zona": "RC",
+      "note": ""
+    },
+    {
+      "ts": "2026-08-26T11:18:47+01:00",
+      "lat": 53.324739,
+      "lon": -6.125587,
+      "dir": 81,
+      "decl": -1.1,
+      "speed": 9,
+      "coach": "EV",
+      "localita": "Dun Laoghaire",
+      "zona": "LL",
+      "note": ""
+    },
+    {
+      "ts": "2026-08-26T11:29:30+01:00",
+      "lat": 53.316165,
+      "lon": -6.127578,
+      "dir": 49,
+      "decl": -1.1,
+      "speed": 8,
+      "coach": "ES",
+      "localita": "Dublino",
+      "zona": "LR",
+      "note": ""
+    },
+    {
+      "ts": "2026-08-26T11:32:52+01:00",
+      "lat": 53.316875,
+      "lon": -6.136276,
+      "dir": 89,
+      "decl": -1.1,
+      "speed": 7,
+      "coach": "ES",
+      "localita": "Dublino",
+      "zona": "",
+      "note": ""
+    },
+    {
+      "ts": "2026-08-26T12:18:59+01:00",
+      "lat": 53.323768,
+      "lon": -6.144322,
+      "dir": 44,
+      "decl": -1.1,
+      "speed": 7,
+      "coach": "EV",
+      "localita": "Dun Laoghaire",
+      "zona": "",
+      "note": ""
+    },
+    {
+      "ts": "2026-08-26T12:26:54+01:00",
+      "lat": 53.315819,
+      "lon": -6.117598,
+      "dir": 28,
+      "decl": -1.1,
+      "speed": 5,
+      "coach": "EV",
+      "localita": "Dun Laoghaire",
+      "zona": "UP",
+      "note": ""
+    },
+    {
+      "ts": "2026-08-26T13:53:44+01:00",
+      "lat": 53.324729,
+      "lon": -6.143226,
+      "dir": 9,
+      "decl": -1.1,
+      "speed": 4,
+      "coach": "EV",
+      "localita": "Dun Laoghaire",
+      "zona": "RC",
+      "note": ""
+    }
+  ],
+  "wind": [
+    {
+      "ts": "2026-08-26T11:05:33+01:00",
+      "dir": 125,
+      "speed": 13.5,
+      "decl": -1.1,
+      "lat": 53.312408,
+      "lon": -6.13608,
+      "coach": "EV",
+      "localita": "Dun Laoghaire",
+      "zona": "LR"
+    },
+    {
+      "ts": "2026-08-26T11:19:56+01:00",
+      "dir": 120,
+      "speed": 13,
+      "decl": -1.1,
+      "lat": 53.324739,
+      "lon": -6.12629,
+      "coach": "EV",
+      "localita": "Dun Laoghaire",
+      "zona": "LL"
+    },
+    {
+      "ts": "2026-08-26T12:08:57+01:00",
+      "dir": 110,
+      "speed": 12,
+      "decl": -1.1,
+      "lat": 53.326996,
+      "lon": -6.141689,
+      "coach": "EV",
+      "localita": "Dun Laoghaire",
+      "zona": "RC"
+    },
+    {
+      "ts": "2026-08-26T12:25:47+01:00",
+      "dir": 130,
+      "speed": 10.5,
+      "decl": -1.1,
+      "lat": 53.315824,
+      "lon": -6.117569,
+      "coach": "EV",
+      "localita": "Dun Laoghaire",
+      "zona": "UP"
+    },
+    {
+      "ts": "2026-08-26T14:02:18+01:00",
+      "dir": 135,
+      "speed": 10,
+      "decl": -1.1,
+      "lat": 53.325262,
+      "lon": -6.143254,
+      "coach": "EV",
+      "localita": "Dun Laoghaire",
+      "zona": "RC"
+    }
+  ]
+}

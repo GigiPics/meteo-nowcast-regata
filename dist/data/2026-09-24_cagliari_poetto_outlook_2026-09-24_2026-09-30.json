@@ -1,0 +1,120 @@
+{
+  "schema_version": "forecast_context.v1",
+  "kind": "outlook",
+  "created_at": "2026-09-24T11:00:00+02:00",
+  "event": {
+    "name": "Outlook test nowcast app",
+    "class": "training / open class",
+    "venue": "Cagliari / Poetto, Sardinia, Italy",
+    "race_area": "Poetto provisional race area",
+    "valid_date": "2026-09-24/2026-09-30",
+    "start_time_local": null,
+    "time_window_local": {
+      "from": "2026-09-24",
+      "to": "2026-09-30"
+    },
+    "forecast_center": {
+      "lat": 39.195938,
+      "lon": 9.181625,
+      "source": "user-provided race area center"
+    }
+  },
+  "reliability": {
+    "overall": "medio-alta 24-28 settembre; media 29-30 settembre",
+    "wind": "media",
+    "wave": "media",
+    "current": "bassa senza rilevamenti diretti"
+  },
+  "wind": {
+    "central_speed_kn": "8-13",
+    "central_direction_deg": "100-140",
+    "central_direction_label": "ESE-SE",
+    "gusts_kn": "13-16",
+    "daily_windows": [
+      {
+        "date": "2026-09-24",
+        "speed_kn": "3-9",
+        "direction_deg": "220-260 / variabile locale",
+        "scenario": "debole, qualità bassa-media"
+      },
+      {
+        "date": "2026-09-25",
+        "speed_kn": "3-6",
+        "direction_deg": "330-020",
+        "scenario": "N-NNW debole, vento scarso"
+      },
+      {
+        "date": "2026-09-26",
+        "speed_kn": "4-7",
+        "direction_deg": "060-090",
+        "scenario": "ENE-E debole, possibile instabilità"
+      },
+      {
+        "date": "2026-09-27",
+        "speed_kn": "2-5",
+        "direction_deg": "090-120",
+        "scenario": "E-ESE molto debole"
+      },
+      {
+        "date": "2026-09-28",
+        "speed_kn": "10-13",
+        "direction_deg": "110-140",
+        "scenario": "ESE-SE più organizzato"
+      },
+      {
+        "date": "2026-09-29",
+        "speed_kn": "10-13",
+        "direction_deg": "120-150",
+        "scenario": "SE/ESE, chop in aumento"
+      },
+      {
+        "date": "2026-09-30",
+        "speed_kn": "8-12",
+        "direction_deg": "100-130",
+        "scenario": "ESE, onda più formata"
+      }
+    ],
+    "rotations": "24-27 variabile/debole; 28-30 asse ESE-SE più persistente",
+    "spread": "medio, maggiore su intensità e timing ingresso ESE-SE"
+  },
+  "sea_state": {
+    "wave_height_m": "0.4-0.9 fino al 28; possibile 0.9-1.3 esterno 29-30",
+    "wave_direction": "E-SE prevalente nella fase 28-30",
+    "wave_period_s": "3-5",
+    "operational_note": "Poetto: chop corto con ESE-SE persistente; lato aperto più rappresentativo della pressione."
+  },
+  "tide_current": {
+    "current_expected": "debole/locale; non inferire dalla sola marea astronomica",
+    "current_unit_rule": "m/min only for measured current",
+    "notes": "Usare CurrWindNav o rilevamenti diretti per linea e layline."
+  },
+  "temperature": {
+    "air_c": "22-28",
+    "water_c": "25-26",
+    "water_source": "stimata/modellata da fonti sea temperature",
+    "stability": "quasi neutra; possibile disaccoppiamento sotto costa con vento leggero"
+  },
+  "triggers": [
+    "Persistenza ESE-SE per 15-20 minuti",
+    "Ultimo rilevamento più alto della media 10 NM: pressione localizzata",
+    "Media 10 NM più alta dell'ultimo dato: buco locale o lato campo sottovento",
+    "Chop corto in aumento oltre 10-12 kn",
+    "Nubi compatte o pioggia: non assumere brezza regolare",
+    "Linee scure continue dal largo: pressione più affidabile lato aperto"
+  ],
+  "bias_applied": {
+    "source": "none",
+    "wind_speed_kn": 0,
+    "wind_direction_deg": 0,
+    "note": "Nessun JSON CurrWindNav Poetto ancora ingerito per questo periodo."
+  },
+  "sources_meta": [
+    "ARPAS stato del mare 2026-09-24",
+    "WXMarine Cagliari 10-day marine forecast",
+    "Windy.app Poetto kitesurfing forecast",
+    "Surfline Poetto tide calendar",
+    "SeaTemperature Poetto September water temperature",
+    "report locale Cagliari 2026-08-24 nel progetto Meteo"
+  ],
+  "linked_report": "raw/2026-09-24_outlook_meteo_cagliari_poetto_2026-09-24_2026-09-30.md"
+}

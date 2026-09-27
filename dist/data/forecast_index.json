@@ -1,0 +1,33 @@
+{
+  "schema_version": "forecast_index.v1",
+  "updated_at": "2026-09-24T11:00:00+02:00",
+  "forecasts": [
+    {
+      "id": "2026-09-27_cagliari_poetto_forecast",
+      "label": "2026-09-27 · Cagliari Poetto · Forecast giorno",
+      "date": "2026-09-27",
+      "venue": "Cagliari / Poetto",
+      "race_area": "Poetto provisional race area",
+      "path": "data/2026-09-27_cagliari_poetto_forecast_context.json",
+      "is_latest": true
+    },
+    {
+      "id": "2026-09-24_cagliari_poetto_outlook",
+      "label": "2026-09-24/30 · Cagliari Poetto · Outlook",
+      "valid_date": "2026-09-24/2026-09-30",
+      "venue": "Cagliari / Poetto",
+      "race_area": "Poetto provisional race area",
+      "path": "data/2026-09-24_cagliari_poetto_outlook_2026-09-24_2026-09-30.json",
+      "is_latest": false
+    },
+    {
+      "id": "2026-08-26_ilca_dun_laoghaire",
+      "label": "2026-08-26 · ILCA Dún Laoghaire · Race area ILCA",
+      "valid_date": "2026-08-26",
+      "venue": "Dún Laoghaire",
+      "race_area": "Race area ILCA / Centre-South",
+      "path": "data/2026-08-26_ilca_dun_laoghaire_forecast_context.json",
+      "is_latest": false
+    }
+  ]
+}

@@ -1,0 +1,525 @@
+{
+  "meta": {
+    "description": "Knowledge base venue olimpiche FIV — profili tattici meteo",
+    "version": 1,
+    "dir_convention": "from",
+    "note_regimi": "SINOTTICO = flusso di gradiente dominante (pesa ECMWF). TERMICO = brezza termica (pesa AROME). LOCALE = venti con nome / orografici (pesa ICON-EU).",
+    "match_radius_km": 25
+  },
+  "venues": [
+    {
+      "id": "hyeres",
+      "nome": "Hyères",
+      "paese": "FR",
+      "lat": 43.09,
+      "lon": 6.16,
+      "tipo": "mare",
+      "modello_preferito": "meteofrance_arome_france_hd",
+      "regime_tipici": {
+        "1": ["LOCALE", "SINOTTICO"],
+        "2": ["LOCALE", "SINOTTICO"],
+        "3": ["LOCALE", "TERMICO"],
+        "4": ["TERMICO", "LOCALE"],
+        "5": ["TERMICO", "LOCALE"],
+        "6": ["TERMICO", "LOCALE"],
+        "7": ["TERMICO", "LOCALE"],
+        "8": ["TERMICO", "LOCALE"],
+        "9": ["TERMICO", "LOCALE"],
+        "10": ["LOCALE", "SINOTTICO"],
+        "11": ["LOCALE", "SINOTTICO"],
+        "12": ["LOCALE", "SINOTTICO"]
+      },
+      "onset_brezza": {
+        "estate": "12:30-13:30", "primavera": "13:00-14:00", "autunno": "13:30-14:30"
+      },
+      "effetti_orografici": "La penisola di Giens e le isole d'Hyères (Porquerolles) creano ombre e accelerazioni. Il Mistral scende incanalato dalla valle del Rodano da NW, forte e rafficoso, con salti di direzione a ridosso della costa. La brezza termica SE-S si sviluppa contro un gradiente debole.",
+      "venti_locali": [
+        {"nome": "Mistral", "dir": "290-320", "note": "NW forte, rafficoso, aria secca e limpida. Rinforza nel pomeriggio, oscillante con periodo lungo. Post-frontale."},
+        {"nome": "Brise thermique", "dir": "130-180", "note": "Brezza di mare SE-S, si stabilizza dopo l'onset, ruota destra (oraria) nel pomeriggio."}
+      ],
+      "onda": "Con Mistral mare formato da NW che cresce rapidamente; con termica mare corto locale.",
+      "segnali_visivi": "Cumuli sull'entroterra = termica in arrivo. Linea di brezza scura visibile al largo verso SE. Mistral: cielo terso, orizzonte nitidissimo, raffiche a strisce sull'acqua.",
+      "corrente": {"rilevante": false, "note": "Corrente debole, generalmente trascurabile salvo forte Mistral."}
+    },
+    {
+      "id": "palma",
+      "nome": "Palma de Mallorca",
+      "paese": "ES",
+      "lat": 39.53,
+      "lon": 2.63,
+      "tipo": "mare",
+      "modello_preferito": "meteofrance_arome_france_hd",
+      "regime_tipici": {
+        "1": ["SINOTTICO", "LOCALE"],
+        "2": ["SINOTTICO", "LOCALE"],
+        "3": ["TERMICO", "SINOTTICO"],
+        "4": ["TERMICO", "SINOTTICO"],
+        "5": ["TERMICO"],
+        "6": ["TERMICO"],
+        "7": ["TERMICO"],
+        "8": ["TERMICO"],
+        "9": ["TERMICO"],
+        "10": ["TERMICO", "SINOTTICO"],
+        "11": ["SINOTTICO", "LOCALE"],
+        "12": ["SINOTTICO", "LOCALE"]
+      },
+      "onset_brezza": {
+        "estate": "12:00-13:00", "primavera": "12:30-13:30", "autunno": "13:00-14:00"
+      },
+      "effetti_orografici": "La baia di Palma è aperta a SW. La Serra de Tramuntana (NW) ripara dal Mistral/Tramontana ma può generare discese di vento e ombre. L'Embat è la classica brezza di baia molto affidabile.",
+      "venti_locali": [
+        {"nome": "Embat", "dir": "200-240", "note": "Brezza termica SW-SSW, molto regolare in estate, 10-16 kn nel pomeriggio, onset attorno a mezzogiorno."},
+        {"nome": "Tramuntana", "dir": "340-020", "note": "N-NNE forte da gradiente, aria fredda, quando presente sopprime l'Embat."}
+      ],
+      "onda": "Onda corta locale generata dall'Embat; swell raro in baia.",
+      "segnali_visivi": "Nuvolosità cumuliforme sulla Serra a metà mattina anticipa un buon Embat. Assenza di nuvole sui monti = brezza debole/ritardata.",
+      "corrente": {"rilevante": false, "note": "Corrente marginale in baia."}
+    },
+    {
+      "id": "marsiglia",
+      "nome": "Marsiglia",
+      "paese": "FR",
+      "lat": 43.27,
+      "lon": 5.35,
+      "tipo": "mare",
+      "modello_preferito": "meteofrance_arome_france_hd",
+      "regime_tipici": {
+        "1": ["LOCALE", "SINOTTICO"],
+        "2": ["LOCALE", "SINOTTICO"],
+        "3": ["LOCALE", "TERMICO"],
+        "4": ["TERMICO", "LOCALE"],
+        "5": ["TERMICO", "LOCALE"],
+        "6": ["TERMICO", "LOCALE"],
+        "7": ["TERMICO", "LOCALE"],
+        "8": ["TERMICO", "LOCALE"],
+        "9": ["TERMICO", "LOCALE"],
+        "10": ["LOCALE", "SINOTTICO"],
+        "11": ["LOCALE", "SINOTTICO"],
+        "12": ["LOCALE", "SINOTTICO"]
+      },
+      "onset_brezza": {
+        "estate": "12:30-13:30", "primavera": "13:00-14:00", "autunno": "13:30-14:30"
+      },
+      "effetti_orografici": "Golfo del Leone: uno dei venue col Mistral più forte e organizzato. Le calanques e i rilievi costieri incanalano e accelerano il flusso da NW. Salti di direzione marcati sotto costa. La termica SE compete col gradiente.",
+      "venti_locali": [
+        {"nome": "Mistral", "dir": "290-330", "note": "NW da fortissimo, molto rafficoso e oscillante, aria secca. Regime dominante e tatticamente premiante."},
+        {"nome": "Marin", "dir": "120-160", "note": "SE umido pre-frontale, porta nuvole basse e visibilità ridotta, mare crescente."},
+        {"nome": "Brise thermique", "dir": "150-190", "note": "Brezza di mare pomeridiana con gradiente debole."}
+      ],
+      "onda": "Mistral genera mare ripido da NW; Marin porta swell da SE.",
+      "segnali_visivi": "Cielo terso e mare a strisce = Mistral in rinforzo. Velatura alta da SW + calo pressione = Marin/perturbazione in arrivo.",
+      "corrente": {"rilevante": false, "note": "Trascurabile."}
+    },
+    {
+      "id": "genova",
+      "nome": "Genova",
+      "paese": "IT",
+      "lat": 44.38,
+      "lon": 8.93,
+      "tipo": "mare",
+      "modello_preferito": "icon_eu",
+      "tide_loc": "liguria/genova",
+      "regime_tipici": {
+        "1": ["LOCALE", "SINOTTICO"],
+        "2": ["LOCALE", "SINOTTICO"],
+        "3": ["TERMICO", "LOCALE"],
+        "4": ["TERMICO", "LOCALE"],
+        "5": ["TERMICO"],
+        "6": ["TERMICO"],
+        "7": ["TERMICO"],
+        "8": ["TERMICO"],
+        "9": ["TERMICO", "LOCALE"],
+        "10": ["LOCALE", "SINOTTICO"],
+        "11": ["LOCALE", "SINOTTICO"],
+        "12": ["LOCALE", "SINOTTICO"]
+      },
+      "onset_brezza": {
+        "estate": "12:00-13:00", "primavera": "12:30-13:30", "autunno": "13:00-14:00"
+      },
+      "effetti_orografici": "L'arco appenninico alle spalle genera Tramontana in discesa (offshore da N), rafficosa e instabile in direzione vicino a costa (effetti di caduta e catabatici). La brezza di mare da S-SE è regolare in estate. Libeccio da SW porta il mare più formato.",
+      "venti_locali": [
+        {"nome": "Tramontana", "dir": "350-030", "note": "N offshore da gradiente, molto rafficosa e con grandi oscillazioni di direzione sotto costa, aria limpida."},
+        {"nome": "Libeccio", "dir": "210-250", "note": "SW teso, aria umida, mare formato e swell."},
+        {"nome": "Brezza di mare", "dir": "160-200", "note": "S-SSE termica pomeridiana, regolare."}
+      ],
+      "onda": "Libeccio = swell da SW. Tramontana = mare corto sottocosta ma cresce al largo.",
+      "segnali_visivi": "Tramontana: aria tersissima, visibilità estrema, raffiche a ventaglio. Libeccio: cielo carico da SW, mare lungo in arrivo.",
+      "corrente": {"rilevante": false, "note": "Debole; può contare con Libeccio sostenuto."}
+    },
+    {
+      "id": "laspezia",
+      "nome": "La Spezia",
+      "paese": "IT",
+      "lat": 44.06,
+      "lon": 9.86,
+      "tipo": "mare",
+      "modello_preferito": "icon_eu",
+      "tide_loc": "liguria/la-spezia",
+      "regime_tipici": {
+        "1": ["LOCALE", "SINOTTICO"],
+        "2": ["LOCALE", "SINOTTICO"],
+        "3": ["TERMICO", "LOCALE"],
+        "4": ["TERMICO", "LOCALE"],
+        "5": ["TERMICO"],
+        "6": ["TERMICO"],
+        "7": ["TERMICO"],
+        "8": ["TERMICO"],
+        "9": ["TERMICO", "LOCALE"],
+        "10": ["LOCALE", "SINOTTICO"],
+        "11": ["LOCALE", "SINOTTICO"],
+        "12": ["LOCALE", "SINOTTICO"]
+      },
+      "onset_brezza": {
+        "estate": "12:00-13:00", "primavera": "12:30-13:30", "autunno": "13:00-14:00"
+      },
+      "effetti_orografici": "Golfo semichiuso protetto dalle Alpi Apuane a E e dai rilievi a N. La brezza termica S-SW entra nel golfo in modo canalizzato e affidabile. Tramontana in discesa da N con raffiche. Libeccio genera mare all'imboccatura del golfo.",
+      "venti_locali": [
+        {"nome": "Brezza di mare", "dir": "180-220", "note": "S-SW termica, incanalata nel golfo, regolare in estate."},
+        {"nome": "Tramontana", "dir": "340-020", "note": "N offshore rafficosa, oscillante."},
+        {"nome": "Libeccio", "dir": "210-240", "note": "SW con swell all'imboccatura."}
+      ],
+      "onda": "Golfo protetto: onda contenuta salvo Libeccio all'imboccatura.",
+      "segnali_visivi": "Increspatura scura in ingresso dal golfo = brezza in rinforzo. Apuane libere da nubi favoriscono la termica.",
+      "corrente": {"rilevante": false, "note": "Trascurabile nel golfo."}
+    },
+    {
+      "id": "weymouth",
+      "nome": "Weymouth & Portland",
+      "paese": "GB",
+      "lat": 50.57,
+      "lon": -2.44,
+      "tipo": "mare",
+      "modello_preferito": "icon_eu",
+      "regime_tipici": {
+        "1": ["SINOTTICO"],
+        "2": ["SINOTTICO"],
+        "3": ["SINOTTICO", "TERMICO"],
+        "4": ["SINOTTICO", "TERMICO"],
+        "5": ["TERMICO", "SINOTTICO"],
+        "6": ["TERMICO", "SINOTTICO"],
+        "7": ["TERMICO", "SINOTTICO"],
+        "8": ["TERMICO", "SINOTTICO"],
+        "9": ["SINOTTICO", "TERMICO"],
+        "10": ["SINOTTICO"],
+        "11": ["SINOTTICO"],
+        "12": ["SINOTTICO"]
+      },
+      "onset_brezza": {
+        "estate": "12:30-13:30", "primavera": "13:00-14:30", "autunno": "13:30-15:00"
+      },
+      "effetti_orografici": "Portland Bill e la penisola creano zone di vento e la celebre Portland Race (fortissima corrente di marea). Il regime è dominato dai fronti atlantici (SW prevalente). Brezza di mare SW in estate. La MAREA è il fattore tattico numero uno.",
+      "venti_locali": [
+        {"nome": "SW frontale", "dir": "210-250", "note": "Flusso atlantico prevalente, oscillante col passaggio dei fronti."},
+        {"nome": "Sea breeze", "dir": "180-210", "note": "Brezza di mare estiva, si somma o contrasta il gradiente."}
+      ],
+      "onda": "Swell atlantico da SW quasi sempre presente; mare confuso vicino al Bill.",
+      "segnali_visivi": "Fronti visibili da W. Linea di brezza. Cambi di corrente alle ore di marea da monitorare con le tavole.",
+      "corrente": {"rilevante": true, "note": "Corrente di marea FORTISSIMA (Portland Race). Fattore decisivo: consultare sempre le tavole di marea e allineare le finestre. Determinante per tutte le classi."}
+    },
+    {
+      "id": "cascais",
+      "nome": "Cascais",
+      "paese": "PT",
+      "lat": 38.69,
+      "lon": -9.42,
+      "tipo": "mare",
+      "modello_preferito": "icon_eu",
+      "regime_tipici": {
+        "1": ["SINOTTICO", "LOCALE"],
+        "2": ["SINOTTICO", "LOCALE"],
+        "3": ["LOCALE", "SINOTTICO"],
+        "4": ["LOCALE", "TERMICO"],
+        "5": ["LOCALE", "TERMICO"],
+        "6": ["LOCALE", "TERMICO"],
+        "7": ["LOCALE", "TERMICO"],
+        "8": ["LOCALE", "TERMICO"],
+        "9": ["LOCALE", "TERMICO"],
+        "10": ["SINOTTICO", "LOCALE"],
+        "11": ["SINOTTICO"],
+        "12": ["SINOTTICO"]
+      },
+      "onset_brezza": {
+        "estate": "12:00-13:30", "primavera": "13:00-14:00", "autunno": "13:30-14:30"
+      },
+      "effetti_orografici": "La Nortada (N-NW) è rinforzata termicamente dal contrasto terra-oceano lungo la costa portoghese e dalla depressione termica iberica: vento forte e costante nel pomeriggio. La Serra de Sintra genera ombre e accelerazioni sul lato N del campo.",
+      "venti_locali": [
+        {"nome": "Nortada", "dir": "330-020", "note": "N-NNW rinforzata termicamente, cresce nel pomeriggio fino a 18-22 kn, molto costante in direzione ma con rinforzi."}
+      ],
+      "onda": "Swell atlantico da NW quasi permanente, periodo lungo; si combina con wind sea da N.",
+      "segnali_visivi": "Foschia costiera che si dirada = Nortada in rinforzo. Nuvole basse strappate sulla Serra de Sintra indicano vento forte in quota.",
+      "corrente": {"rilevante": false, "note": "Corrente oceanica debole rispetto al vento; onda dominante."}
+    },
+    {
+      "id": "aarhus",
+      "nome": "Aarhus",
+      "paese": "DK",
+      "lat": 56.15,
+      "lon": 10.25,
+      "tipo": "mare",
+      "modello_preferito": "icon_eu",
+      "regime_tipici": {
+        "1": ["SINOTTICO"],
+        "2": ["SINOTTICO"],
+        "3": ["SINOTTICO"],
+        "4": ["SINOTTICO", "TERMICO"],
+        "5": ["SINOTTICO", "TERMICO"],
+        "6": ["TERMICO", "SINOTTICO"],
+        "7": ["TERMICO", "SINOTTICO"],
+        "8": ["TERMICO", "SINOTTICO"],
+        "9": ["SINOTTICO", "TERMICO"],
+        "10": ["SINOTTICO"],
+        "11": ["SINOTTICO"],
+        "12": ["SINOTTICO"]
+      },
+      "onset_brezza": {
+        "estate": "12:30-14:00", "primavera": "13:00-14:30", "autunno": "13:30-15:00"
+      },
+      "effetti_orografici": "Baia di Aarhus nel Kattegat, acque relativamente riparate. Regime prevalentemente sinottico (fronti da W-SW). Brezza di mare da E possibile nelle giornate estive stabili. Terreno pianeggiante: pochi effetti orografici, oscillazioni legate alle nubi.",
+      "venti_locali": [
+        {"nome": "Flusso sinottico W-SW", "dir": "220-280", "note": "Prevalente, oscillante col passaggio delle nubi/fronti."},
+        {"nome": "Brezza di mare E", "dir": "070-120", "note": "Da E, nelle giornate anticicloniche estive."}
+      ],
+      "onda": "Mare corto del Kattegat, poco swell, generato localmente dal vento.",
+      "segnali_visivi": "Nuvole cumuliformi = raffiche e oscillazioni sotto le nubi. Cielo sereno stabile favorisce la brezza da E.",
+      "corrente": {"rilevante": false, "note": "Corrente debole nel Kattegat, generalmente non tattica."}
+    },
+    {
+      "id": "garda",
+      "nome": "Riva del Garda",
+      "paese": "IT",
+      "lat": 45.88,
+      "lon": 10.84,
+      "tipo": "lago",
+      "modello_preferito": "icon_eu",
+      "regime_tipici": {
+        "1": ["LOCALE"],
+        "2": ["LOCALE"],
+        "3": ["LOCALE", "TERMICO"],
+        "4": ["TERMICO", "LOCALE"],
+        "5": ["TERMICO"],
+        "6": ["TERMICO"],
+        "7": ["TERMICO"],
+        "8": ["TERMICO"],
+        "9": ["TERMICO"],
+        "10": ["LOCALE", "TERMICO"],
+        "11": ["LOCALE"],
+        "12": ["LOCALE"]
+      },
+      "onset_brezza": {
+        "estate": "11:30-12:30", "primavera": "12:30-13:30", "autunno": "12:30-13:30"
+      },
+      "effetti_orografici": "Lago alpino stretto tra pareti verticali: sistema di brezze estremamente affidabile e canalizzato lungo l'asse N-S del lago. Il Peler (Vento) scende da N al mattino, l'Ora sale da S nel pomeriggio. Le pareti creano bande di pressione e raffiche laterali.",
+      "venti_locali": [
+        {"nome": "Peler (Vento)", "dir": "340-010", "note": "Brezza catabatica da N del mattino presto, decresce verso mezzogiorno."},
+        {"nome": "Ora", "dir": "170-200", "note": "Brezza anabatica da S del pomeriggio, molto regolare, 10-18 kn, il vento-simbolo del Garda."}
+      ],
+      "onda": "Nessuno swell (lago). Onda corta e ripida generata dall'Ora nel bacino alto.",
+      "segnali_visivi": "Transizione Peler→Ora a metà mattina: bonaccia breve poi ingresso dell'Ora da S visibile come banda scura che risale il lago. Nuvole sulle cime = Ora forte.",
+      "corrente": {"rilevante": false, "note": "Corrente irrilevante (lago). Ignorare il blocco corrente."}
+    },
+    {
+      "id": "salerno",
+      "nome": "Golfo di Salerno",
+      "paese": "IT",
+      "lat": 40.66,
+      "lon": 14.75,
+      "tipo": "mare",
+      "modello_preferito": "icon_eu",
+      "tide_loc": "campania/salerno",
+      "regime_tipici": {
+        "1": ["LOCALE", "SINOTTICO"],
+        "2": ["LOCALE", "SINOTTICO"],
+        "3": ["TERMICO", "LOCALE"],
+        "4": ["TERMICO", "LOCALE"],
+        "5": ["TERMICO"],
+        "6": ["TERMICO"],
+        "7": ["TERMICO"],
+        "8": ["TERMICO"],
+        "9": ["TERMICO", "LOCALE"],
+        "10": ["LOCALE", "SINOTTICO"],
+        "11": ["LOCALE", "SINOTTICO"],
+        "12": ["LOCALE", "SINOTTICO"]
+      },
+      "onset_brezza": {
+        "estate": "11:30-12:30", "primavera": "12:30-13:30", "autunno": "13:00-14:00"
+      },
+      "effetti_orografici": "Golfo ampio del basso Tirreno, aperto a SW verso il mare. È chiuso a NW dai Monti Lattari (costiera amalfitana) e a S dal Cilento: questi rilievi generano ombre di vento e accelerazioni sui lati del campo e una Tramontana di caduta da N-NE, rafficosa. La brezza termica di mare da SW-S è regolare in estate. All'imboccatura, verso Punta Campanella e Capri, i flussi meridionali possono incanalarsi.",
+      "venti_locali": [
+        {"nome": "Brezza di mare", "dir": "200-240", "note": "SW-SSW termica pomeridiana, regolare in estate, ruota destra nel corso del pomeriggio."},
+        {"nome": "Brezza di terra", "dir": "020-070", "note": "NE-ENE catabatica del mattino dai Lattari/Appennino, debole, precede l'ingresso della brezza di mare."},
+        {"nome": "Tramontana", "dir": "340-030", "note": "N-NNE da gradiente, offshore, rafficosa e oscillante sotto costa, aria limpida."},
+        {"nome": "Libeccio", "dir": "210-250", "note": "SW teso, aria umida, porta mare formato e onda lunga nel golfo."},
+        {"nome": "Scirocco", "dir": "120-160", "note": "SE caldo-umido, foschia e visibilità ridotta, mare lungo."}
+      ],
+      "onda": "Golfo relativamente riparato: onda contenuta con termica; Libeccio e Scirocco portano onda lunga da SW/SE. Swell tirrenico modesto rispetto ai venue atlantici.",
+      "segnali_visivi": "Cumuli sui Lattari e sul Cilento a metà mattina = buona termica in arrivo. Banda scura da SW sull'acqua = ingresso brezza di mare. Foschia da SE = Scirocco. Aria tersa con raffiche da N = Tramontana.",
+      "corrente": {"rilevante": false, "note": "Corrente tirrenica debole e maree modeste: raramente tattica, salvo Libeccio/Scirocco sostenuti. Verificare con le misure CurrWindNav quando disponibili."}
+    },
+    {
+      "id": "bari",
+      "nome": "Bari",
+      "paese": "IT",
+      "lat": 41.13,
+      "lon": 16.87,
+      "tipo": "mare",
+      "modello_preferito": "icon_eu",
+      "regime_tipici": {
+        "1": ["LOCALE", "SINOTTICO"],
+        "2": ["LOCALE", "SINOTTICO"],
+        "3": ["TERMICO", "LOCALE"],
+        "4": ["TERMICO", "LOCALE"],
+        "5": ["TERMICO"],
+        "6": ["TERMICO"],
+        "7": ["TERMICO"],
+        "8": ["TERMICO"],
+        "9": ["TERMICO", "LOCALE"],
+        "10": ["LOCALE", "SINOTTICO"],
+        "11": ["LOCALE", "SINOTTICO"],
+        "12": ["LOCALE", "SINOTTICO"]
+      },
+      "onset_brezza": {
+        "estate": "11:30-12:30", "primavera": "12:30-13:30", "autunno": "13:00-14:00"
+      },
+      "effetti_orografici": "Costa adriatica bassa e regolare. Brezza di mare da NE-E molto affidabile in estate con entroterra riscaldato. Tramontana da N-NW e Scirocco da SE sono i venti sinottici principali. Pochi effetti orografici, campo aperto.",
+      "venti_locali": [
+        {"nome": "Brezza di mare", "dir": "030-090", "note": "NE-E termica, onset a metà mattina, ruota destra nel pomeriggio, 8-15 kn."},
+        {"nome": "Tramontana", "dir": "330-020", "note": "N-NNW da gradiente, aria fresca e limpida, mare crescente."},
+        {"nome": "Scirocco", "dir": "120-160", "note": "SE umido e caldo, mare lungo e foschia, visibilità ridotta."}
+      ],
+      "onda": "Scirocco genera mare lungo da SE con lungo fetch adriatico; Tramontana mare corto da N.",
+      "segnali_visivi": "Foschia e calo visibilità = Scirocco. Aria limpida e mare increspato da N = Tramontana. Linea di brezza da largo a metà mattina.",
+      "corrente": {"rilevante": false, "note": "Corrente costiera debole, raramente tattica."}
+    },
+    {
+      "id": "brindisi",
+      "nome": "Brindisi",
+      "paese": "IT",
+      "lat": 40.63,
+      "lon": 17.95,
+      "tipo": "mare",
+      "modello_preferito": "icon_eu",
+      "regime_tipici": {
+        "1": ["LOCALE", "SINOTTICO"],
+        "2": ["LOCALE", "SINOTTICO"],
+        "3": ["TERMICO", "LOCALE"],
+        "4": ["TERMICO", "LOCALE"],
+        "5": ["TERMICO"],
+        "6": ["TERMICO"],
+        "7": ["TERMICO"],
+        "8": ["TERMICO"],
+        "9": ["TERMICO", "LOCALE"],
+        "10": ["LOCALE", "SINOTTICO"],
+        "11": ["LOCALE", "SINOTTICO"],
+        "12": ["LOCALE", "SINOTTICO"]
+      },
+      "onset_brezza": {
+        "estate": "11:30-12:30", "primavera": "12:30-13:30", "autunno": "13:00-14:00"
+      },
+      "effetti_orografici": "Basso Adriatico, costa aperta verso E-SE. Brezza di mare da E-SE affidabile in estate. Tramontana da NW e Scirocco da SE i venti dominanti sinottici. Il canale d'Otranto a S può accelerare i flussi meridionali.",
+      "venti_locali": [
+        {"nome": "Brezza di mare", "dir": "080-130", "note": "E-SE termica, regolare in estate, onset a metà mattina."},
+        {"nome": "Tramontana", "dir": "300-340", "note": "NW da gradiente, aria fresca e limpida."},
+        {"nome": "Scirocco", "dir": "130-160", "note": "SE caldo-umido, mare lungo dal canale d'Otranto, foschia."}
+      ],
+      "onda": "Scirocco = mare lungo da SE (lungo fetch); Tramontana = mare corto da NW.",
+      "segnali_visivi": "Foschia da SE = Scirocco in rinforzo. Aria limpida = Tramontana. Banda di brezza da largo a metà mattina.",
+      "corrente": {"rilevante": false, "note": "Corrente debole, raramente tattica."}
+    },
+    {
+      "id": "cagliari_poetto",
+      "nome": "Cagliari / Poetto",
+      "paese": "IT",
+      "lat": 39.195938,
+      "lon": 9.181625,
+      "bbox": {"latMin": 39.14, "latMax": 39.24, "lonMin": 9.10, "lonMax": 9.28},
+      "tipo": "mare",
+      "modello_preferito": "icon_it_d2",
+      "regime_tipici": {
+        "1": ["SINOTTICO"],
+        "2": ["SINOTTICO"],
+        "3": ["SINOTTICO", "TERMICO"],
+        "4": ["TERMICO", "SINOTTICO"],
+        "5": ["TERMICO", "SINOTTICO"],
+        "6": ["TERMICO"],
+        "7": ["TERMICO"],
+        "8": ["TERMICO"],
+        "9": ["SINOTTICO", "TERMICO"],
+        "10": ["SINOTTICO", "TERMICO"],
+        "11": ["SINOTTICO"],
+        "12": ["SINOTTICO"]
+      },
+      "onset_brezza": {
+        "estate": "12:00-13:30",
+        "primavera": "12:30-14:00",
+        "autunno": "13:00-14:30"
+      },
+      "effetti_orografici": "Golfo aperto a S-SE con campo Poetto esposto a E-ESE-SE e costa urbana/lagunare sottovento verso N-NW. Con E-ESE-SE il vento ha fetch interno al Golfo: pressione piu' leggibile sul lato aperto, chop corto e ripido quando supera 10-12 kn. Sotto costa la frizione e la curvatura della spiaggia possono creare buchi, rientri e discontinuita': non trasferire automaticamente il dato di spiaggia al campo aperto. Con W-NW/SW il flusso arriva da terra/citta' o dai rilievi: tende a essere rafficoso, bucato e meno rappresentativo sulla linea. Il promontorio della Sella del Diavolo e Marina Piccola schermano e deviano localmente le componenti occidentali e meridionali vicino a riva.",
+      "venti_locali": [
+        {"nome": "Scirocco / ESE-SE", "dir": "100-150", "note": "Regime piu' utile per il Poetto: pressione da mare/Golfo, fetch sufficiente per chop corto. Lato aperto spesso piu' rappresentativo; controllare differenza costa-campo."},
+        {"nome": "Levante", "dir": "070-110", "note": "Entra lungo il Golfo con chop corto; puo' essere a bande, soprattutto con instabilita' o nubi sul settore orientale."},
+        {"nome": "Maestrale / NW-W", "dir": "280-330", "note": "Da terra rispetto al Poetto: raffiche, buchi e direzione meno stabile; acqua sottocosta piatta non equivale a pressione buona."},
+        {"nome": "Termico debole", "dir": "130-180", "note": "Possibile in giornate serene e gradiente debole; onset spesso tardo, qualita' dipendente dalla continuita' della linea scura da S-SE."}
+      ],
+      "onda": "Con E-ESE-SE 8-13 kn cresce soprattutto chop corto locale; oltre 12 kn persistenti il costo tecnico aumenta rapidamente. Onda lunga significativa solo con sinottico organizzato e fetch esterno; in condizioni leggere il limite principale e' la continuita' della pressione, non l'altezza onda.",
+      "segnali_visivi": "Linee scure continue da ESE-SE dal largo = scenario centrale attivo. Zone lucide sotto costa e pressione al largo = campo non uniforme. Ultimo rilevamento superiore alla media 10 NM = pressione localizzata; media 10 NM superiore all'ultimo dato = buco locale. Chop corto in crescita oltre 10-12 kn = passare a lettura vento+onda. Nubi compatte o pioggia visibile sul Golfo = non assumere brezza regolare.",
+      "corrente": {
+        "rilevante": true,
+        "lag_ore": 1.0,
+        "deriva_vento_pct": 3,
+        "dir_ebb_from": "090-140",
+        "dir_flood_from": "250-310",
+        "note": "La corrente astronomica e' generalmente debole nel Golfo di Cagliari; per linea e layline usare misure dirette CurrWindNav o deriva in acqua. In vento leggero la deriva superficiale da vento puo' pesare quanto la corrente: non inferire corrente tattica dalla sola marea."
+      },
+      "fonti_live": [
+        {"nome": "Windsurfing Club Cagliari - Meteo Webcam", "url": "https://www.windsurfingclub.it/nuovo-servizio-meteo-live-al-windsurfing-club-cagliari/", "tipo": "webcam + stazione vento", "uso": "fonte locale Poetto, utile per confermare vento reale, onde/chop e timing ingresso pressione; verificare esposizione e distanza dal campo."},
+        {"nome": "Smart Beach Cagliari - Monitoring", "url": "https://smartbeachcagliari.it/site/monitoring", "tipo": "sensori meteo/marini", "uso": "fonte ausiliaria su litorale Poetto; usare vento solo se disponibili posizione e dato numerico."},
+        {"nome": "MeteoProject Cagliari - Liceo Euclide", "url": "https://www.meteoproject.it/ftp/stazioni/cagliari/dati.php", "tipo": "stazione meteo urbana", "uso": "controllo vento urbano/terra: utile per trend sinottico, meno rappresentativo del campo in mare."},
+        {"nome": "Webcam Poetto / Gulf of Cagliari", "url": "https://www.windy.com/webcams/1653032060", "tipo": "webcam", "uso": "conferma visiva di chop, linee scure e nuvolosita'; non misura quantitativa se non mostra vento numerico."}
+      ]
+    },
+    {
+      "id": "dunlaoghaire",
+      "nome": "Dún Laoghaire / Dublin Bay",
+      "paese": "IE",
+      "lat": 53.3238,
+      "lon": -6.1337,
+      "bbox": {"latMin": 53.27, "latMax": 53.40, "lonMin": -6.25, "lonMax": -5.95},
+      "tipo": "mare",
+      "modello_preferito": "ukmo_uk_deterministic_2km",
+      "regime_tipici": {
+        "1": ["SINOTTICO"],
+        "2": ["SINOTTICO"],
+        "3": ["SINOTTICO"],
+        "4": ["SINOTTICO", "TERMICO"],
+        "5": ["SINOTTICO", "TERMICO"],
+        "6": ["TERMICO", "SINOTTICO"],
+        "7": ["TERMICO", "SINOTTICO"],
+        "8": ["SINOTTICO", "TERMICO"],
+        "9": ["SINOTTICO"],
+        "10": ["SINOTTICO"],
+        "11": ["SINOTTICO"],
+        "12": ["SINOTTICO"]
+      },
+      "onset_brezza": {
+        "estate": "spesso assente; se entra, non prima delle 14:00", "primavera": "assente o non riconoscibile", "autunno": "assente"
+      },
+      "effetti_orografici": "Baia aperta a E-NE verso l'Irish Sea, costa bassa e urbana a W-SW-S (Dun Laoghaire, Blackrock, Merrion), Howth a N e Dalkey/Killiney a S. Nessun rilievo importante: gli effetti sono di linea di costa, non orografici. Con provenienza 020-160 l'aria arriva dal mare, ma NON dare per scontato che il campo tenga il valore marino: il 25/08/2026 la boa M2 (50 km ENE, sopravvento) ha avuto 14-15 kn ininterrottamente dalle 09:00 alle 17:00 mentre sul campo c'erano 5-7 kn dalle 11:00 alle 14:00, saliti a 13-14 solo dalle 15:00. Rapporto campo/largo circa 0.4 in mattinata, 0.6 alle 14:00, 0.95 dalle 15:00: la baia resta DISACCOPPIATA dal flusso di mare e si aggancia nel pomeriggio. Il vento al largo e' il TETTO della giornata, non il valore atteso sul campo. Il 24/08/2026 pero' il rapporto era maggiore di 1 (campo 9 kn, M2 3.5 kn) in situazione di calma sinottica: il rapporto non e' una costante, va misurato ogni giorno confrontando il primo rilievo in acqua con M2 alla stessa ora. Con provenienza 200-350 il vento ha attraversato l'area urbana di Dublino: diventa rafficoso, oscillante e a macchie, e l'acqua piatta sottocosta NON indica pressione. Il campo si sposta fra quattro aree (North, Centre, South, Salthill): non trasferire una lettura da un'area all'altra, cambiano fetch, costa e corrente. TERMICA: qui la brezza di mare quasi non si innesca. Il mare sta sui 17-18 gradi anche in agosto e la terra, pur con sole pieno, arriva a stento a 20-21: un delta di 2-3 gradi non basta a costruire una cella termica. In piu' il gradiente prevalente e' spesso gia' da mare (E-SE), e con flusso sinottico onshore la brezza non produce nulla di distinguibile perche' l'aria marina e' gia' sopra la costa. Osservato il 24/08/2026: cielo sereno, radiazione al massimo stagionale, delta terra-mare +2.5/+2.9 gradi, nessuna termica. Aspettarsi contributo termico solo con gradiente debole o da terra E delta oltre i 4-5 gradi.",
+      "venti_locali": [
+        {"nome": "E-ENE da Irish Sea", "dir": "060-110", "note": "Flusso da mare con fetch lungo. Vento pieno sul campo, chop corto piu' costoso di quanto dica il TWS medio. Pesare UKMO 2 km, non i globali."},
+        {"nome": "SE-ESE", "dir": "110-160", "note": "Ingresso dal lato mare, pressione a bande. Nei precedenti locali (ILCA U21 Worlds 2025) ha dato raffiche fino a 25 kn e mare corto/ripido fino a 2 m: il caso limite della baia."},
+        {"nome": "SW-W da terra", "dir": "200-290", "note": "Prevalente atlantico ma da terra rispetto al campo: shifty, bucato, rafficoso. Acqua piatta sottocosta senza pressione."},
+        {"nome": "N-NE lungo baia", "dir": "340-060", "note": "Scorre lungo l'asse della baia: pressione non uniforme fra parte interna e aperta, corrente laterale."}
+      ],
+      "onda": "Chop corto e periodo basso: con E-ENE 12-15 kn tipicamente 0.6 m con periodo 4 s, mare di vento sui 0.3 m piu' residuo dall'Irish Sea. Il fetch piu' lungo arriva da E-NE (Burford, Kish). Con SE fresco il mare diventa corto e ripido e domina il costo tecnico su virate e layline. Vento e corrente sono quasi sempre incrociati, non opposti: il chop non si irripidisce per vento contro corrente.",
+      "segnali_visivi": "Linea scura che entra da E/NE/SE = consolidamento del vento sul campo aperto. Confrontare sempre vento in porto (East Pier) con vento sul campo. Con W-SW non confondere acqua lucida sottocosta con pressione buona. Cumuli sull'entroterra a W = contributo termico possibile, ma qui e' raro. ATTENZIONE al dato di nuvolosita': leggere cloud_cover_LOW e shortwave_radiation, non la copertura totale. Il 24/08/2026 il modello dava cloud_cover 100% alle 11-14 mentre in acqua c'era sole pieno: era nuvolosita' alta, con nube bassa a 0% e radiazione a 541-688 W/m2. La copertura totale non dice se il sole scalda la terra; la radiazione si.",
+      "corrente": {
+        "rilevante": true,
+        "lag_ore": 1.3,
+        "deriva_vento_pct": 3,
+        "dir_ebb_from": "340-055",
+        "dir_flood_from": "180-215",
+        "note": "Fattore tattico primario, MAI uniforme sul campo. Flusso principale Irish Sea: flood verso N, ebb verso S; dentro la baia stream complessi ed eddy, con differenze vicino alla costa sud e al West Pier. L'INVERSIONE cade circa 1h30-1h45 PRIMA dell'estremo di marea (misurato il 24/08/2026: alle 13:18 ebb pieno 9 m/min da 335°, alle 14:04 gia' 3 m/min da 076°, con bassa alle 15:26 locali). Orari di marea in ora LOCALE irlandese, non UTC. Intensita' misurate 3-11 m/min, scala circa lineare con l'escursione del giorno. In stanca 3-4 m/min con direzione instabile e residuo verso W-NW. Una corrente uniforme non favorisce nessun lato: sposta tutti allo stesso modo e cambia LAYLINE e avvicinamento alla boa. Il vantaggio di lato lo da' un GRADIENTE, che si vede solo con due rilievi alla stessa ora in punti diversi (linea e boa di bolina). ATTENZIONE ALLA MISURA: un oggetto galleggiante in superficie misura marea PIU' deriva di vento, che vale circa il 3% del vento (14 m/min con 15 kn). Su quattro giorni di rilievi il quadro e' coerente ma non ancora dimostrato: VICINO ALLA STANCA la misura tende a seguire il vento (27/08 alle 11:10-11:22, alta alle 11:47, vento 15 kn da 085-090 e corrente misurata da 061-079: scarto 6-24 gradi), A MEZZA MAREA segue la marea (24/08 alle 12:30-13:18 e 26/08 alle 13:53: scarto 126-160 gradi dal vento). E' una correlazione su quattro giornate, non un esperimento: per chiudere la questione serve una COPPIA di rilievi nello stesso punto e alla stessa ora, uno in superficie e uno con un oggetto che peschi mezzo metro. La differenza fra i due e' la deriva di vento. Conseguenza prudenziale: i rilievi fatti vicino alla stanca vanno trattati come non affidabili per la marea, e un 'gradiente' letto in quella finestra puo' essere differenza locale di vento - e' quello che e' successo il 25 e il 26/08, quando il gradiente centro/bordi compariva e spariva."
+      }
+    }
+  ]
+}
