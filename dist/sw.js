@@ -3,8 +3,8 @@
 // arriva subito, ma l'app resta usabile senza connessione in campo.
 // Tieni allineato con APP_VERSION in index.html: cambiando il nome della cache
 // il vecchio contenuto viene eliminato all'activate e il deploy arriva pulito.
-const CACHE = 'sailweather-43.26-simple-race-flow';
-const SHELL = ['./', 'index.html', 'venues.json', 'manifest.json', 'icon.svg'];
+const CACHE = 'sailweather-44.26-auto-currwind';
+const SHELL = ['./', 'index.html', 'venues.json', 'manifest.json', 'icon.svg', 'currwind.js', 'auto-currwind.js', 'compact-layout.css'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -20,7 +20,7 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
   // Non intercettare API meteo/marea/Claude né tile mappa: sempre rete diretta.
-  if (e.request.method !== 'GET' ||
+  if (url.origin !== self.location.origin || e.request.method !== 'GET' ||
       url.pathname.startsWith('/api/') ||
       /open-meteo\.com|anthropic\.com|nominatim|tile\.openstreetmap|tiles\.openseamap|tides4fishing|worldtides/.test(url.host + url.pathname)) {
     return;

@@ -508,6 +508,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text);
   .sheet.card { border-radius: 18px 18px 0 0; max-height: 92vh; border-left: 0; border-right: 0; border-bottom: 0; }
 }
 </style>
+<link rel="stylesheet" href="compact-layout.css">
 <input type="file" id="fileInput" accept=".json" style="display:none" onchange="onFileLoaded(event)">
 <input type="file" id="screenshotInput" accept="image/png,image/jpeg,image/webp" style="display:none" onchange="onScreenshotLoaded(event)">
 
@@ -540,18 +541,14 @@ html, body { height: 100%; background: var(--bg); color: var(--text);
   <div id="map">
     <div id="hint">
       <div class="icon">⚓</div>
-      <div class="msg">Inserisci una venue per iniziare<br>oppure carica un file JSON CurrWindNav</div>
+      <div class="msg">Inserisci una venue per iniziare<br>poi fissa il centro campo sulla mappa</div>
     </div>
 
     <div id="drawControls">
       <button class="map-btn" id="drawBtn" onclick="toggleDraw()">⊙ Disegna area</button>
       <button class="map-btn" id="clearBtn" onclick="clearArea()" style="display:none">✕ Rimuovi area</button>
       <button class="map-btn" id="newLocBtn" onclick="newLocation()" style="display:none">⌖ Nuova località</button>
-      <button class="map-btn" id="measuresBtn" onclick="loadMeasures()">1 · Rilevamenti</button>
-      <button class="map-btn" id="nowcastBtn" onclick="runNowcast()">2 · Nowcast 60′</button>
       <button class="map-btn dev-only" id="demoJsonBtn" onclick="loadDemoJson()" style="display:none">🧪 Demo JSON</button>
-      <button class="map-btn aux-map-btn" id="screenshotBtn" onclick="document.getElementById('screenshotInput').click()">🖼️ Screenshot</button>
-      <button class="map-btn aux-map-btn" id="jsonBtn" onclick="document.getElementById('fileInput').click()">↑ JSON</button>
     </div>
 
     <div id="legend">
@@ -574,6 +571,10 @@ html, body { height: 100%; background: var(--bg); color: var(--text);
 </div>
 
 
+<dialog id="operationDialog" aria-labelledby="operationTitle">
+  <div class="sheet-head"><h2 class="sheet-title" id="operationTitle"></h2><button class="btn btn-ghost" onclick="closeOperation()" aria-label="Chiudi dettagli">✕</button></div>
+  <div class="sheet-body" id="operationBody"></div>
+</dialog>
 <!-- ══════════ SETTINGS ══════════ -->
 <div class="overlay center" id="settingsOverlay">
   <div class="sheet card">
@@ -657,7 +658,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text);
 // l'anno cambia solo a gennaio. Serve a capire a colpo d'occhio se il telefono
 // ha davvero caricato l'ultimo deploy o è rimasto su una copia in cache.
 // NOTA: quando la cambi, allinea anche CACHE in sw.js.
-const APP_VERSION = '43.26-simple-race-flow';
+const APP_VERSION = '44.26-auto-currwind';
 ['appVer', 'appVerSettings'].forEach(id => {
   const el = document.getElementById(id);
   if (el) el.textContent = 'v' + APP_VERSION;
@@ -812,6 +813,7 @@ function toggleDraw() {
 }
 
 function startDraw() {
+  showMapUI();
   refreshMapSize();                 // allinea la geometria prima del tap
   phase = 'place';
   setDrawBtn(true, '✕ Annulla');
@@ -861,12 +863,13 @@ function drawCircle() {
     iconSize:[26,26], iconAnchor:[13,13]
   });
   centerMarker = L.marker(areaCenter, { icon: handle, draggable: true, autoPan: true, keyboard: false }).addTo(map);
+  centerMarker.on('dragstart', () => { draggingCenter = true; clearTimeout(measuresTimer); measuresGeneration++; measuresRequest?.abort(); clearMeasurements(); measuresState = {kind:'idle',message:'Sposta il centro campo',stats:null}; updateMeasuresStatus(); });
   centerMarker.on('drag', () => {
     areaCenter = centerMarker.getLatLng();
     areaCircle.setLatLng(areaCenter);
     updateCenterUI();
   });
-  centerMarker.on('dragend', saveArea);
+  centerMarker.on('dragend', () => { draggingCenter = false; saveArea(); scheduleMeasures(); });
 }
 
 function updateCenterUI() {
@@ -907,6 +910,7 @@ function updateRadiusUI() {
 // di 2 km cambia modello, corrente e costa). Salviamo centro, raggio e zoom;
 // "Nuova localita'" e' l'unico modo di ripartire da zero.
 function saveArea() {
+  if (measuresKey() !== measuresContext) scheduleMeasures();
   if (!areaCenter || !areaRadius) return;
   try {
     localStorage.setItem(LS.area, JSON.stringify({
@@ -949,6 +953,7 @@ function clearArea() {
   if (areaCircle) { map.removeLayer(areaCircle); areaCircle = null; }
   if (centerMarker) { map.removeLayer(centerMarker); centerMarker = null; }
   areaCenter = null; areaRadius = 0;
+  scheduleMeasures();
   document.getElementById('clearBtn').style.display = 'none';
   document.getElementById('newLocBtn').style.display = 'none';
   setDrawBtn(false, '⊙ Disegna area');
@@ -973,8 +978,10 @@ function onFileLoaded(e) {
       if (d.type !== 'currwind_export') {
         alert('File non riconosciuto come export CurrWindNav'); return;
       }
-      jsonData = d;
-      renderJSON();
+      if (!areaCenter) { showToast('Fissa prima il centro campo per filtrare il JSON entro 10 NM.'); return; }
+      if (!CurrWind.validDate(d.meta?.from) || d.meta.from !== d.meta.to || d.meta.from !== measuresDate) { showToast('Seleziona la data del file e importa un JSON di una sola giornata.',5000); return; }
+      manualMeasures = {sessioni:d.measurements || [],venti:d.wind || [],markers:d.markers || []};
+      loadMeasures();
       showToast(`✅ Caricato JSON da file: ${f.name}`, 4000);
     } catch { alert('Errore nel parsing JSON'); }
   };
@@ -1018,60 +1025,20 @@ async function loadDemoJson() {
   try {
     const r = await fetch('data/fixtures/nav_2026-08-26.json', { cache:'no-store' });
     if (!r.ok) throw new Error('fixture non disponibile');
-    jsonData = await r.json();
-    await renderJSON();
-    showToast('🧪 Demo JSON 2026-08-26 caricata: ora puoi premere ⚡ Nowcast.', 5000);
-    setStatus('Demo JSON caricata — premi ⚡ Nowcast', 'ready');
+    const demo = await r.json();
+    if (!areaCenter) { showToast('Fissa prima il centro campo.'); return; }
+    setMeasuresDate('2026-08-26');
+    manualMeasures = {sessioni:demo.measurements || [],venti:demo.wind || [],markers:demo.markers || []};
+    await loadMeasures();
+    showToast('🧪 Demo storica 2026-08-26: rilevamenti filtrati sulla mappa.', 5000);
+    setStatus('Demo storica caricata', 'ready');
   } catch (e) {
     showToast('❌ Demo JSON non caricata: ' + (e.message || String(e)), 5000);
   }
 }
 
 // ── MISURE DA FIREBASE RTDB ──
-const FIREBASE_URL = 'https://currwindnav-60ee3-default-rtdb.europe-west1.firebasedatabase.app';
-const RADIUS_NM = 10;
-const NM_TO_KM = 1.852;
-const MAX_RADIUS_KM = RADIUS_NM * NM_TO_KM;
 
-function decodeFirebaseRecord(raw) {
-  if (!raw) return null;
-  if (typeof raw === 'string') {
-    try { return JSON.parse(raw); } catch { return null; }
-  }
-  if (typeof raw === 'object') return raw;
-  return null;
-}
-
-function validNum(v) {
-  return typeof v === 'number' && Number.isFinite(v);
-}
-
-function currentCoordsFromRecord(r) {
-  if (!r) return null;
-  if (validNum(r.midLat) && validNum(r.midLon)) return { lat:r.midLat, lon:r.midLon, coord_source:'midLat_midLon' };
-  if (validNum(r.lat) && validNum(r.lon)) return { lat:r.lat, lon:r.lon, coord_source:'latlon' };
-  if (validNum(r.lat1) && validNum(r.lon1) && validNum(r.lat2) && validNum(r.lon2)) {
-    return { lat:(r.lat1 + r.lat2) / 2, lon:(r.lon1 + r.lon2) / 2, coord_source:'midpoint' };
-  }
-  return null;
-}
-
-function windCoordsFromRecord(r) {
-  if (r && validNum(r.lat) && validNum(r.lon)) return { lat:r.lat, lon:r.lon, coord_source:'latlon' };
-  return null;
-}
-
-function recordFingerprint(type, r, c) {
-  return [
-    type,
-    r.id || '',
-    r.ts || r.timestamp || r.time || '',
-    c ? c.lat.toFixed(5) : '',
-    c ? c.lon.toFixed(5) : '',
-    r.dir ?? '',
-    r.speed ?? r.spd ?? ''
-  ].join('|');
-}
 
 function showToast(msg, duration = 3000) {
   const id = 'toast_' + Date.now();
@@ -1092,331 +1059,7 @@ function showToast(msg, duration = 3000) {
   }, duration);
 }
 
-async function loadMeasures() {
-  if (!areaCenter) {
-    setStatus('Disegna l\'area di regata prima di caricare le misure', 'idle');
-    return;
-  }
 
-  // Chiedi data se vuoi testare date diverse
-  let dateStr = localStorage.getItem('sw_measures_date') || null;
-  if (!dateStr) {
-    const today = new Date();
-    dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-  }
-
-  setStatus('Caricamento misure da Firebase…', 'drawing');
-
-  try {
-
-    // Fetcha corrente e vento da oggi
-    const [sessioni, venti] = await Promise.all([
-      fetch(`${FIREBASE_URL}/sessioni/${dateStr}.json`).then(r => r.ok ? r.json() : null).catch(() => null),
-      fetch(`${FIREBASE_URL}/venti/${dateStr}.json`).then(r => r.ok ? r.json() : null).catch(() => null)
-    ]);
-
-    const sessTot = sessioni ? Object.keys(sessioni).length : 0;
-    const ventiTot = venti ? Object.keys(venti).length : 0;
-    console.log(`Firebase ${dateStr}: ${sessTot} correnti grezze, ${ventiTot} venti grezzi`);
-
-    if (!sessioni && !venti) {
-      const msg = `❌ Data ${dateStr} non trovata su Firebase\n\n💡 Verifica:\n• Misure sincronizzate su CurrWindNav?\n• Scrivi in console: localStorage.setItem('sw_measures_date','2026-09-22') per testare un'altra data`;
-      showToast(msg, 10000);
-      console.log('Firebase: nessun dato per', dateStr);
-      console.log('Per testare una data diversa, usa: localStorage.setItem("sw_measures_date","YYYY-MM-DD")');
-      setStatus('❌ Data ' + dateStr + ' non trovata su Firebase', 'idle');
-      return;
-    }
-
-    console.log(`Firebase ${dateStr}: ${sessTot} correnti grezze, ${ventiTot} venti grezzi`);
-    console.log(`Centro area disegnato: lat=${areaCenter.lat.toFixed(4)}, lon=${areaCenter.lng.toFixed(4)}`);
-
-    // Filtra per distanza da area center (max 10 NM, regola skill Meteo)
-    const measurements = [];
-    const wind = [];
-    const seen = new Set();
-    const ingestStats = {
-      raw_current: sessTot,
-      raw_wind: ventiTot,
-      decoded_current: 0,
-      decoded_wind: 0,
-      duplicates_removed: 0,
-      no_coordinates: 0,
-      out_of_range: 0,
-      valid_current: 0,
-      valid_wind: 0,
-      radius_nm: RADIUS_NM,
-      center: { lat: areaCenter.lat, lon: areaCenter.lng },
-      date: dateStr
-    };
-
-    if (sessioni && typeof sessioni === 'object') {
-      let corrCount = 0;
-      Object.values(sessioni).forEach(m => {
-        const parsed = decodeFirebaseRecord(m);
-        if (!parsed) return;
-        corrCount++;
-        ingestStats.decoded_current++;
-        if (corrCount === 1) console.log('Prima corrente:', parsed);
-
-        const coords = currentCoordsFromRecord(parsed);
-        if (!coords) {
-          ingestStats.no_coordinates++;
-          console.log(`  Corrente ${corrCount} senza coordinate valide:`, parsed);
-          return;
-        }
-        const fp = recordFingerprint('current', parsed, coords);
-        if (seen.has(fp)) {
-          ingestStats.duplicates_removed++;
-          return;
-        }
-        seen.add(fp);
-        const d = haversineKm(
-          { lat: areaCenter.lat, lon: areaCenter.lng },
-          { lat: coords.lat, lon: coords.lon }
-        );
-        console.log(`  Corrente ${corrCount}: lat=${coords.lat.toFixed(4)}, lon=${coords.lon.toFixed(4)} → ${d.toFixed(1)} km`);
-        if (d <= MAX_RADIUS_KM) {
-          measurements.push({
-            ...parsed,
-            lat: coords.lat,
-            lon: coords.lon,
-            coord_source: coords.coord_source,
-            distance_km_from_forecast_center: d,
-            distance_nm_from_forecast_center: d / NM_TO_KM,
-            observed_type: 'current'
-          });
-        } else {
-          ingestStats.out_of_range++;
-        }
-      });
-    }
-
-    if (venti && typeof venti === 'object') {
-      let ventCount = 0;
-      Object.values(venti).forEach(w => {
-        const parsed = decodeFirebaseRecord(w);
-        if (!parsed) return;
-        ventCount++;
-        ingestStats.decoded_wind++;
-        if (ventCount === 1) console.log('Primo vento:', parsed);
-
-        const coords = windCoordsFromRecord(parsed);
-        if (!coords) {
-          ingestStats.no_coordinates++;
-          console.log(`  Vento ${ventCount} senza lat/lon validi:`, parsed);
-          return;
-        }
-        const fp = recordFingerprint('wind', parsed, coords);
-        if (seen.has(fp)) {
-          ingestStats.duplicates_removed++;
-          return;
-        }
-        seen.add(fp);
-        const d = haversineKm(
-          { lat: areaCenter.lat, lon: areaCenter.lng },
-          { lat: coords.lat, lon: coords.lon }
-        );
-        console.log(`  Vento ${ventCount}: lat=${coords.lat}, lon=${coords.lon} → ${d.toFixed(1)} km`);
-        if (d <= MAX_RADIUS_KM) {
-          wind.push({
-            ...parsed,
-            lat: coords.lat,
-            lon: coords.lon,
-            coord_source: coords.coord_source,
-            distance_km_from_forecast_center: d,
-            distance_nm_from_forecast_center: d / NM_TO_KM,
-            observed_type: 'wind'
-          });
-        } else {
-          ingestStats.out_of_range++;
-        }
-      });
-    }
-
-    ingestStats.valid_current = measurements.length;
-    ingestStats.valid_wind = wind.length;
-
-    if (ingestStats.out_of_range > 0) console.log(`  Scartati per distanza > ${MAX_RADIUS_KM.toFixed(1)} km: ${ingestStats.out_of_range}`);
-    console.log(`  FINALE: ${measurements.length} correnti caricate, ${wind.length} venti caricati`);
-
-    // Costruisci export
-    jsonData = {
-      type: 'currwind_export',
-      version: 1,
-      meta: {
-        event: '', campo: '', localita: '',
-        scope: 'all', owner: 'all', owner_coach: null, owner_localita: null, owner_radius_km: null,
-        period: 'today', from: dateStr, to: dateStr,
-        dir_convention: 'from', dir_ref: 'magnetic',
-        current_dir_ref: 'magnetic', wind_dir_ref: 'magnetic',
-        speed_unit: 'mt_min', wind_speed_unit: 'kn',
-        ingest_source: 'direct_currwindnav_firebase',
-        ingest_stats: ingestStats
-      },
-      markers: [],
-      measurements,
-      wind
-    };
-
-    console.log('Prima di renderJSON: jsonData.measurements.length=', jsonData.measurements.length, 'jsonData.wind.length=', jsonData.wind.length);
-    await renderJSON();
-    console.log('Dopo renderJSON');
-
-    // Toast con feedback
-    if (measurements.length === 0 && wind.length === 0) {
-      const msg = `⚠️ Grezze: ${sessTot} correnti, ${ventiTot} venti\nSenza coordinate: ${ingestStats.no_coordinates}\nFuori ${RADIUS_NM} NM: ${ingestStats.out_of_range}\nDuplicati: ${ingestStats.duplicates_removed}\n\nVerifica il centro dell'area disegnata.`;
-      showToast(msg, 6000);
-    } else {
-      const msg = `✅ Validi entro ${RADIUS_NM} NM: ${measurements.length} correnti + ${wind.length} venti\nEsclusi: ${ingestStats.no_coordinates} senza coordinate, ${ingestStats.out_of_range} fuori raggio, ${ingestStats.duplicates_removed} duplicati`;
-      showToast(msg, 4000);
-    }
-
-  } catch (e) {
-    setStatus('❌ Errore nel caricamento: ' + (e.message || String(e)), 'idle');
-    showToast('❌ Errore: ' + (e.message || String(e)), 5000);
-  }
-}
-
-const ZONE_CLR = { RC:'#F0A500', PIN:'#F0A500', UP:'#00B4D8', LL:'#2CB67D', LR:'#2CB67D', GATE:'#00B4D8', REACH:'#A78BFA' };
-
-async function renderJSON() {
-  jsonLayer.clearLayers();
-  const bounds = [];
-
-  // Markers (geometria campo)
-  (jsonData.markers || []).forEach(m => {
-    const c = ZONE_CLR[m.zona] || '#E8F4FD';
-    const ico = L.divIcon({
-      className: '',
-      html: `<div style="width:12px;height:12px;border-radius:50%;background:${c};border:2px solid #0B1929;box-shadow:0 0 0 1.5px ${c}"></div>`,
-      iconSize:[12,12], iconAnchor:[6,6]
-    });
-    L.marker([m.lat, m.lon], { icon: ico })
-      .bindPopup(`<b>${m.zona || 'Marker'}</b><br>${m.lat.toFixed(5)}, ${m.lon.toFixed(5)}`)
-      .addTo(jsonLayer);
-    bounds.push([m.lat, m.lon]);
-  });
-
-  // Corrente
-  console.log('jsonLayer esiste?', !!jsonLayer, 'jsonLayer._map?', !!jsonLayer._map);
-  (jsonData.measurements || []).forEach((m, idx) => {
-    // m.speed è già in m/min (CurrWindNav): nessuna conversione in nodi.
-    // Aumentiamo il minimo da 7 a 14 per renderle visibili anche a zoom basso
-    const r = Math.min(Math.max(m.speed * 4, 14), 28);
-    const ico = L.divIcon({
-      className: '',
-      html: `<div style="width:${r}px;height:${r}px;border-radius:50%;background:#00B4D8;border:1.5px solid #0B1929;opacity:0.85"></div>`,
-      iconSize:[r,r], iconAnchor:[r/2,r/2]
-    });
-    try {
-      console.log(`Corrente ${idx+1}: lat=${m.lat}, lon=${m.lon}, speed=${m.speed}`);
-      const marker = L.marker([m.lat, m.lon], { icon: ico })
-        .bindPopup(
-          `<b>Corrente</b>${m.zona?' — '+m.zona:''}<br>` +
-          `Dir: ${m.dir}° | Vel: ${m.speed} m/min<br>` +
-          `Coach: ${m.coach} · ${fmtTs(m.ts)}` +
-          (m.note ? `<br>${m.note}` : '')
-        ).addTo(jsonLayer);
-      console.log(`  ✓ Marker corrente ${idx+1} aggiunto a jsonLayer`);
-      bounds.push([m.lat, m.lon]);
-    } catch (e) {
-      console.log(`Errore disegnando corrente ${idx+1}:`, e.message);
-    }
-  });
-
-  // Vento
-  (jsonData.wind || []).forEach((w, idx) => {
-    try {
-      // CurrWindNav usa 'spd' per il vento, non 'speed'
-      const spd = w.spd != null ? w.spd : w.speed;
-      console.log(`Vento ${idx+1}: lat=${w.lat}, lon=${w.lon}, spd=${spd}, dir=${w.dir}`);
-      const ico = L.divIcon({
-        className: '',
-        html: `<div style="width:11px;height:11px;border-radius:2px;background:#F0A500;border:1.5px solid #0B1929;transform:rotate(${w.dir}deg)"></div>`,
-        iconSize:[11,11], iconAnchor:[5.5,5.5]
-      });
-      L.marker([w.lat, w.lon], { icon: ico })
-        .bindPopup(
-          `<b>Vento</b>${w.zona?' — '+w.zona:''}<br>` +
-          `Dir: ${w.dir}° | Vel: ${spd} kn<br>` +
-          `Coach: ${w.coach} · ${fmtTs(w.ts)}`
-        ).addTo(jsonLayer);
-      bounds.push([w.lat, w.lon]);
-    } catch (e) {
-      console.log(`Errore disegnando vento ${idx+1}:`, e.message);
-    }
-  });
-
-  if (bounds.length) {
-    console.log('Bounds con', bounds.length, 'punti:', bounds);
-    const group = new L.featureGroup(jsonLayer.getLayers());
-    map.fitBounds(group.getBounds(), { padding: [60, 60], maxZoom: 16 });
-    setTimeout(() => map.invalidateSize(), 100);
-    showMapUI();
-    document.getElementById('legend').style.display = 'flex';
-    console.log('Map bounds:', map.getBounds());
-  } else {
-    console.log('Nessun bound caricato!');
-  }
-
-  const mc = (jsonData.measurements||[]).length;
-  const wc = (jsonData.wind||[]).length;
-  const mk = (jsonData.markers||[]).length;
-
-  // ── VENUE dal BARICENTRO GPS (mai da meta.localita) ──
-  const centroid = getJsonCentroid(jsonData);
-  let vLine = '', warn = '';
-  if (centroid) {
-    const m = await matchVenue(centroid);
-    if (m.venue) {
-      currentVenue = m.venue;
-      currentVenueDist = m.dist;
-      vLine = `📍 <b>${m.venue.nome}</b>${m.via === 'bbox' ? '' : ` · ${m.dist.toFixed(0)} km`}`;
-    } else {
-      // nessun match: azzera, altrimenti resterebbe attiva la venue precedente
-      currentVenue = null;
-      currentVenueDist = null;
-      vLine = `📍 ${centroid.lat.toFixed(3)}, ${centroid.lon.toFixed(3)} · venue non in KB`;
-    }
-    // Area disegnata altrove? Vincono le misure, ma l'utente deve saperlo.
-    if (areaCenter) {
-      const d = haversineKm({ lat:centroid.lat, lon:centroid.lon },
-                            { lat:areaCenter.lat, lon:areaCenter.lng });
-      if (d > 20) {
-        warn = `<div class="panel-warn">⚠️ L'area disegnata è a <b>${d.toFixed(0)} km</b> da queste misure.
-          Uso la posizione del JSON. <button class="link-btn" onclick="clearArea()">Rimuovi area</button></div>`;
-      }
-    }
-  }
-
-  document.getElementById('bottomPanel').innerHTML = `
-    <div class="panel-col">
-      <div class="panel-row">
-        <div class="status">
-          <div class="dot ready"></div>
-          <div style="min-width:0">
-            <div class="status-text">CurrWindNav: ${mk} boe · ${mc} corrente · ${wc} vento</div>
-            ${vLine ? `<div class="status-sub">${vLine}</div>` : ''}
-          </div>
-        </div>
-      </div>
-      ${warn}
-      ${activeForecastCard()}
-      ${!areaCenter ? `<div class="status-sub" style="color:var(--text2)">Per il nowcast disegna un'area o usa il centroide del JSON.</div>` : ''}
-      ${workflowStepsHTML()}
-      <div class="act-row primary-actions">
-        <button class="btn btn-accent act-btn" onclick="loadMeasures()">1 · Rilevamenti 10 NM</button>
-        <button class="btn btn-amber act-btn" onclick="runNowcast()">2 · Nowcast 60′</button>
-      </div>
-      <div class="secondary-actions">
-        <button class="btn btn-ghost" onclick="openObs()">📝 Osservazione manuale</button>
-        <button class="btn btn-ghost" onclick="document.getElementById('screenshotInput').click()">🖼️ Screenshot meteo</button>
-      </div>
-    </div>`;
-  // se il nowcast è già aperto, rigeneralo con le misure appena caricate
-  if (document.getElementById('briefingOverlay').classList.contains('open')) runNowcast();
-}
 
 // ── UI HELPERS ──
 function fmtKm(m) {
@@ -1483,6 +1126,8 @@ function workflowStepsHTML() {
 async function selectForecast(path) {
   if (!path) return;
   await loadForecastContext(path);
+  if (CurrWind.validDate(forecastContext?.event?.valid_date)) setMeasuresDate(forecastContext.event.valid_date);
+  renderOperation('forecast');
   resetBottomPanel();
   showToast('📄 Forecast attivo aggiornato', 2500);
 }
@@ -1522,77 +1167,7 @@ async function loadLatestForecastContext() {
   return loadForecastContext(activeForecastPath);
 }
 
-function refreshOperationalPanel() {
-  if (jsonData) { renderJSON(); return; }
-  if (areaCenter) { showAreaPanel(); return; }
-  resetBottomPanel();
-}
 
-function showAreaPanel() {
-  const chips = RADIUS_PRESETS.map(m =>
-    `<button class="rchip" data-m="${m}" onclick="setRadiusAbs(${m})">${(m/1000).toFixed(m%1000?1:0)}</button>`
-  ).join('');
-  document.getElementById('bottomPanel').innerHTML = `
-    <div style="display:flex;flex-direction:column;gap:9px;width:100%">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-        <div class="info-block">
-          <span class="info-label">Centro campo · trascina il punto</span>
-          <span class="info-value" id="centerVal">${fmtCoord(areaCenter.lat,'N','S')} ${fmtCoord(areaCenter.lng,'E','W')}</span>
-        </div>
-        <button class="btn btn-ghost btn-sm" onclick="clearArea()" title="Rimuovi l'area">✕</button>
-      </div>
-      ${activeForecastCard()}
-      ${workflowStepsHTML()}
-      <div class="act-row primary-actions">
-        <button class="btn btn-accent act-btn" onclick="loadMeasures()">1 · Rilevamenti 10 NM</button>
-        <button class="btn btn-amber act-btn" onclick="runNowcast()">2 · Nowcast 60′</button>
-      </div>
-      <div class="secondary-actions">
-        <button class="btn btn-ghost" onclick="openObs()">📝 Osservazione manuale</button>
-        <button class="btn btn-ghost" onclick="document.getElementById('screenshotInput').click()">🖼️ Screenshot</button>
-      </div>
-      <div class="radius-row">
-        <span class="info-label" style="margin-right:2px">Raggio</span>
-        <button class="rstep" onclick="setRadius(-1)">−</button>
-        <span class="rval" id="radiusVal">${fmtRadiusKm()}</span>
-        <button class="rstep" onclick="setRadius(1)">+</button>
-        <span style="width:1px;height:20px;background:var(--border);margin:0 2px"></span>
-        ${chips}
-        <span style="font-size:11px;color:var(--text2)">km</span>
-      </div>
-    </div>
-  `;
-  updateRadiusUI();
-}
-
-function resetBottomPanel() {
-  // Se c'è un JSON caricato, il pannello resta quello delle misure: sono loro
-  // l'ancora, non l'area disegnata che è appena stata rimossa.
-  if (jsonData) { renderJSON(); return; }
-  const msg = forecastSummaryText();
-  if (msg) {
-    document.getElementById('bottomPanel').innerHTML = `
-      <div class="status" style="flex-direction:column;align-items:flex-start;gap:7px">
-        <span class="forecast-chip">📄 ${msg}</span>
-        ${activeForecastCard()}
-        ${workflowStepsHTML()}
-        <span class="status-text" id="statusText">Fissa il centro campo sulla mappa, poi cerca i rilevamenti e lancia il nowcast.</span>
-        <div class="act-row primary-actions" style="width:100%">
-          <button class="btn btn-accent act-btn" onclick="startDraw()">Fissa centro campo</button>
-          <button class="btn btn-amber act-btn" onclick="runNowcast()" title="Richiede area o rilevamenti">Nowcast 60′</button>
-        </div>
-        <div class="dot ready" id="statusDot" style="display:none"></div>
-      </div>
-    `;
-    return;
-  }
-  document.getElementById('bottomPanel').innerHTML = `
-    <div class="status">
-      <div class="dot ready" id="statusDot"></div>
-      <span class="status-text" id="statusText">Disegna l'area di regata</span>
-    </div>
-  `;
-}
 
 /* ═══════════════════════════════════════════════════════════════
    SAILWEATHER — MOTORE BRIEFING
@@ -3171,15 +2746,9 @@ function bearing(a, b) {
   return (Math.atan2(y, x)*180/Math.PI + 360) % 360;
 }
 
-// Centro dell'area: quello disegnato o il centroide delle misure CurrWindNav
-// Le MISURE hanno la precedenza sull'area disegnata: se c'è un JSON caricato,
-// la posizione è quella dei rilevamenti reali. L'area disegnata può essere di
-// un'altra sessione o di un'altra venue e non deve dirottare il nowcast.
+// Il centro scelto sulla mappa determina il filtro e la previsione.
 function nowcastCenter() {
-  const c = getJsonCentroid(jsonData);
-  if (c) return { lat: c.lat, lng: c.lon };
-  if (areaCenter) return { lat: areaCenter.lat, lng: areaCenter.lng };
-  return null;
+  return areaCenter ? {lat:areaCenter.lat,lng:areaCenter.lng} : null;
 }
 
 // Ancora: stato MISURATO (CurrWindNav + osservazioni manuali) con trend osservato
@@ -3448,6 +3017,8 @@ let nowcastBusy = false;
 let lastNowcastAnchor = null;
 async function runNowcast() {
   if (nowcastBusy) return;
+  if (measuresDate !== todayISO()) { showToast('Data storica: seleziona oggi per il nowcast dei prossimi 60 minuti.',5000); return; }
+  if (measuresState.kind === 'loading' || draggingCenter || measuresKey() !== measuresContext) { showToast('Attendi la ricerca dei rilevamenti per il campo selezionato.'); return; }
   const center = nowcastCenter();
   if (!center) {
     setStatus('Per il nowcast serve un centro: disegna area o carica rilevamenti CurrWindNav', 'idle');
@@ -3455,6 +3026,9 @@ async function runNowcast() {
     return;
   }
   nowcastBusy = true;
+  const selectedContext = measuresKey();
+  const fc = forecastContext?.event?.forecast_center;
+  const forecast = forecastContext?.event?.valid_date === measuresDate && CurrWind.validCoords(fc?.lat,fc?.lon) && CurrWind.distance({lat:center.lat,lon:center.lng},fc) <= 10 ? forecastContext : null;
   openNowcastLoading();
   const setStep = t => { const el = document.getElementById('ncStep'); if (el) el.textContent = t; };
   try {
@@ -3468,11 +3042,12 @@ async function runNowcast() {
     const phase = thermalPhase(venue);
     loadHistory(venue, center); // preserva eventuali cache/storico locale; non blocca il nowcast locale
 
-    renderNowcastData({ anchor, tend, geom, phase, venue, forecast: forecastContext });
-    renderNowcast(buildLocalNowcast({ anchor, tend, geom, phase, venue, forecast: forecastContext }));
+    if (selectedContext !== measuresKey()) { closeBriefing(); return; }
+    renderNowcastData({ anchor, tend, geom, phase, venue, forecast });
+    renderNowcast(buildLocalNowcast({ anchor, tend, geom, phase, venue, forecast }));
 
     const host = document.getElementById('ncAI');
-    if (host) host.insertAdjacentHTML('beforeend', `<div class="raw-note">Nowcast generato localmente: forecast ufficiale + rilevamenti 10 NM + tendenza modello.</div>`);
+    if (host) host.insertAdjacentHTML('beforeend', `<div class="raw-note">Nowcast generato localmente: ${forecast ? "previsione ufficiale + " : ""}rilevamenti disponibili entro 10 NM + tendenza modello.</div>`);
   } catch (e) {
     showNowcastError('Errore nel nowcast.\n'+String(e && e.message || e), false);
   } finally { nowcastBusy = false; }
@@ -3487,7 +3062,7 @@ function openNowcastLoading() {
   const title = document.querySelector('#briefingOverlay .sheet-title');
   const sub = document.getElementById('briefingSub');
   if (title) title.textContent = 'Nowcast operativo';
-  if (sub) sub.textContent = 'forecast ufficiale + rilevamenti 10 NM';
+  if (sub) sub.textContent = 'rilevamenti disponibili + tendenza modello';
   nowcastHost().innerHTML =
     `<div class="loading-box"><div class="spinner"></div><div style="font-size:14px;font-weight:600">Elaboro la sezione 60′</div><div class="step" id="ncStep">Leggo le misure…</div></div>`;
   document.getElementById('briefingOverlay').classList.add('open');
@@ -3556,7 +3131,7 @@ function renderNowcastData(ctx) {
     `<div class="brief-meta" style="margin-top:18px;border-top:1px solid var(--border);padding-top:16px"><span class="regime-tag">⚡ Nowcast 60′</span>
       <span class="venue-chip">${fEv?'📄 forecast '+fEv.valid_date+' · ':''}${venue?'📍 <b>'+venue.nome+'</b>':'Area GPS'} · <b>${anchor.n_vento+anchor.n_corrente}</b> misure</span></div>
      <div class="data-grid">${cells.map(c=>`<div class="data-cell"><div class="dl">${c[0]}</div><div class="dv">${c[1]}</div><div class="du">${c[2]}</div></div>`).join('')}</div>
-     ${fEv ? `<div class="src-note">Baseline ufficiale: <b>${fEv.race_area || fEv.venue}</b> · ${forecast.wind?.central_speed_kn || '—'} kt · ${forecast.wind?.central_direction_deg || '—'}° · affidabilità ${forecast.reliability?.overall || 'n/d'}</div>` : `<div class="src-note src-warn">Nessun forecast_context ufficiale caricato: nowcast basato solo su misure/modello.</div>`}
+     ${fEv ? `<div class="src-note">Baseline ufficiale: <b>${fEv.race_area || fEv.venue}</b> · ${forecast.wind?.central_speed_kn || '—'} kt · ${forecast.wind?.central_direction_deg || '—'}° · affidabilità ${forecast.reliability?.overall || 'n/d'}</div>` : `<div class="src-note src-warn">Nessuna previsione ufficiale valida per questa data e questo campo: nowcast basato solo su misure/modello.</div>`}
      ${src}
      ${liveSourcesNote}
      <div id="ncAI"></div>`;
@@ -3609,7 +3184,7 @@ function buildLocalNowcast(ctx) {
     : 'nessuna previsione ufficiale';
   const dati = hasObs
     ? `Baseline ${baseline}; ${dataParts.join('; ')}; misure ${fresh ? 'fresche' : 'da aggiornare'}; modello usato solo per tendenza.`
-    : `Baseline ${baseline}; nessun rilevamento CurrWindNav valido ancora caricato: nowcast preliminare da forecast_context e tendenza modello.`;
+    : `Baseline ${baseline}; nessun rilevamento CurrWindNav valido ancora caricato: nowcast preliminare con le fonti disponibili e la tendenza modello.`;
 
   const ventoMis = oSpd != null
     ? `Ultimo rilevamento **${Math.round(oSpd)} kt** da **${Math.round(oDir)}°** (${sourceLabel(vu)}${noteTxt(vu)}).`
@@ -3633,8 +3208,8 @@ function buildLocalNowcast(ctx) {
         : 'Corrente non misurata: serve rilievo fresco su linea.');
 
   const sintesi = hasObs
-    ? `Nowcast corretto sulle misure reali. ${Math.abs(dSpd || 0) >= 2 || Math.abs(dDir || 0) >= 12 ? 'C’è bias rilevante rispetto alla previsione: aggiornare scenario operativo.' : 'Scarto contenuto rispetto alla previsione ufficiale.'}`
-    : `Nowcast preliminare: la previsione ufficiale è caricata, ma mancano rilevamenti freschi entro 10 NM. Prima decisione: premere “Cerca rilevamenti 10 NM”.`;
+    ? `Nowcast corretto sulle misure reali. ${Math.abs(dSpd || 0) >= 2 || Math.abs(dDir || 0) >= 12 ? 'C’è bias rilevante rispetto alla previsione: aggiornare scenario operativo.' : (forecast ? 'Scarto contenuto rispetto alla previsione ufficiale.' : 'Manca una previsione ufficiale valida per verificare lo scarto.')}`
+    : `Nowcast preliminare: ${forecast ? 'previsione ufficiale disponibile' : 'previsione ufficiale non disponibile per data e campo'}; mancano rilevamenti freschi entro 10 NM. La ricerca dei rilevamenti è automatica; controlla lo stato e la data.`;
 
   return {
     orizzonte: 'prossimi 60 minuti',
@@ -3643,13 +3218,13 @@ function buildLocalNowcast(ctx) {
     sintesi,
     vento: ventoMis + ventoMedio + biasTxt + trendTxt,
     zone: [
-      { nome:'Lato aperto', nota:'Usare come riferimento principale per pressione e bande, come da forecast ufficiale.' },
+      { nome:'Lato aperto', nota:'Osservare pressione e bande; verificare la continuità sul campo.' },
       { nome:'Lato costa', nota:'Controllare zone lucide/buchi; non trasferire automaticamente pressione vista al largo.' }
     ],
     corrente,
     prossima_mossa: hasObs
       ? 'Usare il bias osservato per aggiornare linea e primo lato.'
-      : 'Caricare rilevamenti CurrWindNav prima di dare comando tattico definitivo.',
+      : 'Attendere rilevamenti automatici o aggiungere una misura in campo prima di una decisione tattica.',
     piano_atleti: {
       direttiva_bolina: hasObs ? 'Segui il lato con pressione misurata più fresca' : 'Attendi rilevamento vento prima del lato',
       gestione_onda_corrente: cu && cu.m_min != null ? `Compensa corrente ${Math.round(cu.m_min)} m/min da ${Math.round(cu.dirFrom)}°` : 'Corrente da verificare su linea',
@@ -3708,14 +3283,14 @@ function renderNowcast(nc) {
   html += `<div id="tabPane-atleti" style="display:none">${atleti}</div>`;
 
   html += `<div class="brief-actions">
-    <button class="btn btn-accent" onclick="loadMeasures()">1 · Rilevamenti 10 NM</button>
+    <button class="btn btn-accent" onclick="openOperation('measures')">Rilevamenti</button>
     <button class="btn btn-amber" onclick="runNowcast()">2 · Nowcast 60′</button>
   </div>
   <div class="brief-actions" style="margin-top:8px">
     <button class="btn btn-ghost" onclick="openObs()">📝 Osservazione manuale</button>
     <button class="btn btn-ghost" onclick="clearObsLog()">🧹 Pulisci obs</button>
   </div>`;
-  html += `<div class="raw-note">Nowcast ancorato alle tue misure: CurrWindNav entro 10 NM, osservazioni in acqua e dati numerici da webcam/stazioni inseriti manualmente. Il modello dà solo la tendenza.<br>Ricarica il JSON o aggiungi un'osservazione a ogni nuova misura.</div>`;
+  html += `<div class="raw-note">Nowcast ancorato alle tue misure: CurrWindNav entro 10 NM, osservazioni in acqua e dati numerici da webcam/stazioni inseriti manualmente. Il modello dà solo la tendenza.<br>I rilevamenti vengono aggiornati automaticamente mentre l’app è visibile.</div>`;
   host.innerHTML = html;
 }
 
@@ -3723,7 +3298,7 @@ function showNowcastError(msg, isSettings) {
   const host = document.getElementById('ncAI') || nowcastHost();
   host.innerHTML = `<div class="err-box">${mdInline(msg)}</div>`
     + `<div class="brief-actions"><button class="btn btn-amber" onclick="openObs()">📝 Osservazione</button>`
-    + `<button class="btn btn-ghost" onclick="loadMeasures()">📏 Rilevamenti 10 NM</button>`
+    + `<button class="btn btn-ghost" onclick="openOperation('measures')">📏 Rilevamenti</button>`
     + (isSettings?`<button class="btn btn-accent" onclick="closeBriefing();openSettings()">⚙ Impostazioni</button>`:`<button class="btn btn-ghost" onclick="runNowcast()">🔄 Riprova</button>`)
     + `</div>`;
 }
@@ -4096,14 +3671,14 @@ window.addEventListener('popstate', () => {
 });
 
 // ── AVVIO: riprendi l'area dell'ultima sessione ──
-loadObsLog();
-restoreArea();
-loadLatestForecastContext();
+// Initialization is in auto-currwind.js, after the compact controls are available.
 
 // ── PWA service worker ──
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
 }
 </script>
+<script src="currwind.js"></script>
+<script src="auto-currwind.js"></script>
 </body>
 </html>

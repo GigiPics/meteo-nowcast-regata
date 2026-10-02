@@ -1,3 +1,13 @@
+AGGIORNAMENTO 2026-10-02 — v44.26-auto-currwind
+Ricerca CurrWindNav automatica su data visibile e centro campo, ogni 2 minuti con app visibile.
+Data iniziale: oggi. Nessun valore nascosto sw_measures_date.
+Filtro obbligatorio 10 NM, coordinate valide e deduplicazione per id.
+Corrente: midLat/midLon o midpoint estremi; vento: lat/lon.
+Mappa principale e pulsanti Campo / Previsione / Rilevamenti / Nowcast; dettagli in popup.
+I dati storici non alimentano il nowcast attuale. JSON manuale resta disponibile nei dettagli.
+Queste regole sostituiscono le precedenti indicazioni di ricerca tramite pulsante.
+Stato: aggiornamento locale verificato; pubblicazione non eseguita in questa sessione.
+
 METEO NOWCAST REGATA
 Web app privata per nowcasting meteo operativo
 
