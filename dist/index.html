@@ -7,7 +7,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0B1929">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<meta name="apple-mobile-web-app-title" content="SailWeather">
 <title>SailWeather · Briefing Olimpico</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
@@ -658,7 +660,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text);
 // l'anno cambia solo a gennaio. Serve a capire a colpo d'occhio se il telefono
 // ha davvero caricato l'ultimo deploy o è rimasto su una copia in cache.
 // NOTA: quando la cambi, allinea anche CACHE in sw.js.
-const APP_VERSION = '45.26-live-sources';
+const APP_VERSION = '46.26-home-icon';
 ['appVer', 'appVerSettings'].forEach(id => {
   const el = document.getElementById(id);
   if (el) el.textContent = 'v' + APP_VERSION;
