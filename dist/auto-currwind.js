@@ -163,7 +163,7 @@ function renderOperation(view) {
       <p class="detail-list">La ricerca dei rilevamenti copre sempre 10 NM dal centro, indipendentemente dal raggio del campo.</p>
       <div class="secondary-actions"><button class="btn btn-accent" onclick="closeOperation();startDraw()">Sposta centro</button><button class="btn btn-ghost" onclick="closeOperation();clearArea()">Rimuovi campo</button></div>` : '<p class="detail-list">Indica il centro geografico del campo: la ricerca partirà automaticamente.</p><button class="btn btn-accent" onclick="closeOperation();startDraw()">Fissa centro sulla mappa</button>';
   } else if (view === 'forecast') {
-    html = activeForecastCard() + `<p class="detail-list">${forecastContext?.event?.valid_date !== measuresDate ? 'La data della previsione non coincide con quella dei rilevamenti.' : 'Data coerente con i rilevamenti selezionati.'}</p>
+    html = '<section id="latestForecastHTML" aria-label="Ultimo forecast HTML"></section>' + activeForecastCard() + `<p class="detail-list">${forecastContext?.event?.valid_date !== measuresDate ? 'La data della previsione non coincide con quella dei rilevamenti.' : 'Data coerente con i rilevamenti selezionati.'}</p>
       <button class="btn btn-ghost" onclick="closeOperation();document.getElementById('screenshotInput').click()">Carica screenshot meteo</button>`;
   } else if (view === 'sources') {
     html = `<h3>CurrWindNav · entro 10 NM</h3><p class="detail-list" id="sourceMeasuresStatus">${escapeHTML(measuresState.message)} · ${measuresDate}</p>
@@ -179,6 +179,7 @@ function renderOperation(view) {
       <div class="secondary-actions"><button id="retryMeasures" class="btn btn-ghost" onclick="resumeAutomaticMeasures()">${manualMeasures?'Riprendi automatico':'Riprova ora'}</button><button id="manualObservation" class="btn btn-ghost" onclick="closeOperation();openObs()">Osservazione manuale</button><button id="importMeasures" class="btn btn-ghost" onclick="closeOperation();document.getElementById('fileInput').click()">Importa JSON</button></div>`;
   }
   document.getElementById('operationBody').innerHTML = html;
+  if (view === 'forecast' && typeof renderLatestForecastHTML === 'function') renderLatestForecastHTML();
 }
 
 // Poll only while visible. Never infer a race area from the observations being filtered.

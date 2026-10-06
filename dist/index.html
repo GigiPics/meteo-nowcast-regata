@@ -660,7 +660,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text);
 // l'anno cambia solo a gennaio. Serve a capire a colpo d'occhio se il telefono
 // ha davvero caricato l'ultimo deploy o è rimasto su una copia in cache.
 // NOTA: quando la cambi, allinea anche CACHE in sw.js.
-const APP_VERSION = '46.26-home-icon';
+const APP_VERSION = '47.26-forecast-html';
 ['appVer', 'appVerSettings'].forEach(id => {
   const el = document.getElementById(id);
   if (el) el.textContent = 'v' + APP_VERSION;
@@ -1140,6 +1140,7 @@ async function loadForecastIndex() {
     if (!r.ok) return [];
     const idx = await r.json();
     forecastIndex = Array.isArray(idx.forecasts) ? idx.forecasts : [];
+    if (typeof updateLatestReport === 'function') updateLatestReport({...idx, forecasts:forecastIndex});
     const latest = forecastIndex.find(f => f.is_latest) || forecastIndex[0];
     if (latest && latest.path) activeForecastPath = latest.path;
     return forecastIndex;
