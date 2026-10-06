@@ -74,6 +74,8 @@ function updateMeasuresStatus() {
     el.textContent = measuresState.message + (measuresDate !== todayISO() ? ' · storico' : '') + (manualMeasures ? ' · file' : '');
   }
   const dialog = document.getElementById('operationDialog');
+  const sourceStatus = document.getElementById('sourceMeasuresStatus');
+  if (sourceStatus) sourceStatus.textContent = measuresState.message + ' · ' + measuresDate;
   if (dialog.open && dialog.dataset.view === 'measures') {
     // Keep focus on the active button when a background update changes the details.
     const focused = document.activeElement?.id;
@@ -110,7 +112,7 @@ function renderOperationalPanel() {
       <div class="compact-actions">
         <button class="btn btn-ghost" onclick="openOperation('area')">Campo</button>
         <button class="btn btn-ghost" onclick="openOperation('forecast')">Previsione</button>
-        <button class="btn btn-ghost" onclick="openOperation('measures')">Rilevamenti</button>
+        <button class="btn btn-ghost" onclick="openOperation('sources')">Fonti live</button>
         <button class="btn btn-amber" onclick="runNowcast()">Nowcast 60′</button>
       </div>`;
   }
@@ -123,13 +125,36 @@ function showAreaPanel() { renderOperationalPanel(); }
 function resetBottomPanel() { renderOperationalPanel(); }
 function openOperation(view) {
   renderOperation(view);
-  document.getElementById('operationDialog').showModal();
+  const dialog = document.getElementById('operationDialog');
+  if (!dialog.open) dialog.showModal();
+  if (view === 'sources') loadLocalSources();
 }
 function closeOperation() { document.getElementById('operationDialog').close(); }
+let localSourcesGeneration = 0;
+async function loadLocalSources() {
+  const generation = ++localSourcesGeneration;
+  const key = measuresKey();
+  if (!areaCenter) return;
+  try {
+    const match = await matchVenue({lat:areaCenter.lat,lng:areaCenter.lng});
+    const dialog = document.getElementById('operationDialog');
+    const host = document.getElementById('localSources');
+    if (!host || !dialog.open || dialog.dataset.view !== 'sources' || key !== measuresKey() || generation !== localSourcesGeneration) return;
+    const sources = (match.venue?.fonti_live || []).filter(source => {
+      try { return ['https:','http:'].includes(new URL(source.url).protocol); } catch { return false; }
+    });
+    host.innerHTML = sources.length
+      ? `<p class="detail-list">${escapeHTML(match.venue.nome)}</p><ul class="live-source-list">${sources.map(source => `<li><a href="${escapeHTML(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(source.nome || 'Apri fonte')}</a><small>${escapeHTML(source.tipo || 'Fonte locale')}</small><p>${escapeHTML(source.uso || '')}</p></li>`).join('')}</ul>`
+      : `<p class="detail-list">Nessuna webcam o stazione ancora censita${match.venue ? ' per '+escapeHTML(match.venue.nome) : ' per questo campo'}. Questo non significa che non ne esistano.</p>`;
+  } catch {
+    const host = document.getElementById('localSources');
+    if (host && generation === localSourcesGeneration && key === measuresKey()) host.textContent = 'Elenco fonti non disponibile. Riapri Fonti live per riprovare.';
+  }
+}
 function renderOperation(view) {
   const dialog = document.getElementById('operationDialog');
   dialog.dataset.view = view;
-  const titles = {area:'Campo di regata',forecast:'Previsione di riferimento',measures:'Rilevamenti CurrWindNav'};
+  const titles = {area:'Campo di regata',forecast:'Previsione di riferimento',measures:'Rilevamenti CurrWindNav',sources:'Fonti live e rilevamenti'};
   document.getElementById('operationTitle').textContent = titles[view];
   let html = '';
   if (view === 'area') {
@@ -140,6 +165,12 @@ function renderOperation(view) {
   } else if (view === 'forecast') {
     html = activeForecastCard() + `<p class="detail-list">${forecastContext?.event?.valid_date !== measuresDate ? 'La data della previsione non coincide con quella dei rilevamenti.' : 'Data coerente con i rilevamenti selezionati.'}</p>
       <button class="btn btn-ghost" onclick="closeOperation();document.getElementById('screenshotInput').click()">Carica screenshot meteo</button>`;
+  } else if (view === 'sources') {
+    html = `<h3>CurrWindNav · entro 10 NM</h3><p class="detail-list" id="sourceMeasuresStatus">${escapeHTML(measuresState.message)} · ${measuresDate}</p>
+      <div class="secondary-actions"><button class="btn btn-accent" onclick="openOperation('measures')">Vedi rilevamenti</button><a class="btn btn-ghost" href="https://currwindnav-web.vercel.app/" target="_blank" rel="noopener noreferrer">Apri CurrWindNav ↗</a></div>
+      <h3 style="margin-top:22px">Webcam e stazioni locali</h3><div id="localSources"><p class="detail-list">${areaCenter ? 'Cerco le fonti censite per il campo…' : 'Fissa il centro campo sulla mappa per vedere le fonti della zona.'}</p></div>
+      <p class="detail-list">I link aprono i siti delle fonti. Immagini e valori delle stazioni non vengono importati automaticamente: verifica orario, esposizione e distanza dal campo.</p>
+      <button class="btn btn-ghost" onclick="closeOperation();openObs()">Annota una misura dalla stazione</button>`;
   } else {
     const st = measuresState.stats;
     html = `<p class="detail-list">${escapeHTML(measuresState.message)}<br>Data: ${measuresDate}${measuresState.checkedAt ? '<br>Ultimo controllo: '+measuresState.checkedAt : ''}</p>

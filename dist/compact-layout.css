@@ -16,6 +16,11 @@
 #operationDialog .btn, #operationDialog .rstep { min-height:44px; }
 #operationDialog .rstep { min-width:44px; }
 .detail-list { line-height:1.65; margin:10px 0; font-size:14px; }
+.live-source-list { list-style:none; padding:0; }
+.live-source-list li { margin:12px 0; padding:12px; border:1px solid var(--border); border-radius:10px; }
+.live-source-list a { display:flex; align-items:center; min-height:44px; color:var(--accent); font-weight:600; }
+.live-source-list small { display:block; color:var(--text2); margin:4px 0; }
+.live-source-list p { font-size:13px; line-height:1.5; }
 @media(max-width:360px) { .compact-actions .btn { font-size:11px !important; padding:0 3px; } }
 #drawControls { top:12px; bottom:auto; right:10px; left:auto; }
 #legend { display:none !important; }

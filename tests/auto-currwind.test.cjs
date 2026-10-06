@@ -10,7 +10,7 @@ function setup() {
     if (!nodes.has(id)) nodes.set(id,{style:{},dataset:{},open:false,value:'',textContent:'',innerHTML:''});
     return nodes.get(id);
   };
-  const context = vm.createContext({console,Date,AbortController,AbortSignal,DOMException,setTimeout,clearTimeout,fetch,requestAnimationFrame:fn=>fn(),
+  const context = vm.createContext({console,Date,URL,AbortController,AbortSignal,DOMException,setTimeout,clearTimeout,fetch,requestAnimationFrame:fn=>fn(),
     document:{getElementById:node},
     areaCenter:{lat:0,lng:0},jsonData:null,jsonLayer:{clearLayers(){}},todayISO:()=> '2026-10-02',refreshMapSize(){},setStatus(){},
     L:{circleMarker:()=>({addTo:()=>({bindPopup(){}})})},fmtTs:ts=>ts});
@@ -59,4 +59,21 @@ test('removing the area invalidates a pending response',async()=>{
   await request;
   assert.equal(run('jsonData'),null);
   assert.equal(run('measuresState.kind'),'idle');
+});
+test('live sources resolve the selected field and exclude unsafe links',async()=>{
+  const {run,context}=setup();
+  context.matchVenue=async()=>({venue:{nome:'Poetto',fonti_live:[{nome:'Webcam',url:'https://example.com/camera',tipo:'webcam'},{nome:'Invalid',url:'javascript:alert(1)'}]}});
+  run("renderOperation('sources'); document.getElementById('operationDialog').open=true");
+  await run('loadLocalSources()');
+  const html=run("document.getElementById('localSources').innerHTML");
+  assert.match(html,/Poetto/);
+  assert.match(html,/https:\/\/example.com\/camera/);
+  assert(!html.includes('javascript:'));
+});
+test('uncatalogued venue says sources are not catalogued, without claiming none exist',async()=>{
+  const {run,context}=setup();
+  context.matchVenue=async()=>({venue:null});
+  run("renderOperation('sources'); document.getElementById('operationDialog').open=true");
+  await run('loadLocalSources()');
+  assert.match(run("document.getElementById('localSources').innerHTML"),/non significa che non ne esistano/);
 });
