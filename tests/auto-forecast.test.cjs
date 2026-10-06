@@ -1,0 +1,25 @@
+const fs = require('node:fs');
+const vm = require('node:vm');
+const assert = require('node:assert/strict');
+const code = fs.readFileSync(require('node:path').join(__dirname, '../dist/auto-forecast.js'), 'utf8');
+let calls = 0;
+let index = {forecasts:[{date:'2026-10-06',path:'data/new.json',forecast_center:{lat:39.206,lon:9.181}}]};
+let next = {schema_version:'forecast_context.v1',event:{valid_date:'2026-10-06'},wind:{},revision:'new'};
+let offline = false;
+const context = vm.createContext({document:{hidden:false,addEventListener(){},getElementById(){return null}},window:{addEventListener(){}},setInterval(){},nowcastBusy:false,selectForecast:async()=>{},forecastIndex:[],activeForecastPath:'data/old.json',forecastContext:{revision:'old'},nowcastCenter:()=>({lat:39.206,lng:9.181}),measuresDate:'2026-10-06',CurrWind:{validCoords:(a,b)=>Number.isFinite(a)&&Number.isFinite(b),distance:()=>0},fetch:async(path)=>{if(offline)throw Error('offline');return {ok:true,json:async()=>path.includes('index')?index:next};},refreshOperationalPanel(){calls++},renderOperation(){},showToast(){}});
+vm.runInContext(code,context);
+(async()=>{
+ await context.refreshPublishedForecast();
+ assert.equal(context.activeForecastPath,'data/new.json');
+ assert.equal(context.forecastContext.revision,'new');
+ await context.refreshPublishedForecast(); assert.equal(calls,1,'unchanged forecast stays quiet');
+ offline=true; await context.refreshPublishedForecast(); assert.equal(context.forecastContext.revision,'new'); offline=false;
+ await context.selectForecast('data/new.json');
+ index={forecasts:[{date:'2026-10-06',path:'data/other.json',forecast_center:{lat:39.206,lon:9.181}},{path:'data/new.json'}]};
+ next={...next,revision:'edited'};
+ await context.refreshPublishedForecast(); assert.equal(context.activeForecastPath,'data/new.json','manual choice preserved'); assert.equal(context.forecastContext.revision,'edited');
+ context.measuresDate='2026-10-07'; vm.runInContext('forecastManualSelection = false',context);
+ index={forecasts:[{date:'2026-10-06',path:'data/other.json',forecast_center:{lat:39.206,lon:9.181}}]};
+ await context.refreshPublishedForecast(); assert.equal(context.activeForecastPath,'data/new.json','wrong date not selected');
+ console.log('PASS: revision, unchanged, offline, manual selection, date filter');
+})().catch(error=>{console.error(error);process.exitCode=1});

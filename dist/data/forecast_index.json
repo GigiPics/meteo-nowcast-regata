@@ -1,7 +1,22 @@
 {
   "schema_version": "forecast_index.v1",
-  "updated_at": "2026-09-24T11:00:00+02:00",
+  "updated_at": "2026-10-06T09:51:13+02:00",
   "forecasts": [
+    {
+      "id": "2026-10-06_cagliari-poetto_4286cab68a",
+      "label": "2026-10-06 · Cagliari / Poetto · Nacra 17 · 14:00–17:00",
+      "date": "2026-10-06",
+      "venue": "Cagliari / Poetto",
+      "race_area": "Poetto centrale, punto confermato; estensione non specificata",
+      "forecast_center": {
+        "lat": 39.206,
+        "lon": 9.181,
+        "status": "confirmed_by_user_screenshot_9"
+      },
+      "path": "data/2026-10-06_cagliari-poetto_4286cab68a_forecast_context.json",
+      "revision": "19f410a4ca0a132ca530c5666a0b70836a2255a0df9f2e10638794477253e855",
+      "is_latest": true
+    },
     {
       "id": "2026-09-27_cagliari_poetto_forecast",
       "label": "2026-09-27 · Cagliari Poetto · Forecast giorno",
@@ -9,7 +24,7 @@
       "venue": "Cagliari / Poetto",
       "race_area": "Poetto provisional race area",
       "path": "data/2026-09-27_cagliari_poetto_forecast_context.json",
-      "is_latest": true
+      "is_latest": false
     },
     {
       "id": "2026-09-24_cagliari_poetto_outlook",

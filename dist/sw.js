@@ -3,8 +3,8 @@
 // arriva subito, ma l'app resta usabile senza connessione in campo.
 // Tieni allineato con APP_VERSION in index.html: cambiando il nome della cache
 // il vecchio contenuto viene eliminato all'activate e il deploy arriva pulito.
-const CACHE = 'sailweather-44.26-auto-currwind';
-const SHELL = ['./', 'index.html', 'venues.json', 'manifest.json', 'icon.svg', 'currwind.js', 'auto-currwind.js', 'compact-layout.css'];
+const CACHE = 'sailweather-44.27-auto-forecast';
+const SHELL = ['./', 'index.html', 'venues.json', 'manifest.json', 'icon.svg', 'currwind.js', 'auto-currwind.js', 'auto-forecast.js', 'compact-layout.css'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
