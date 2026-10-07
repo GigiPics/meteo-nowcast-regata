@@ -1,5 +1,6 @@
 PUBBLICAZIONE — AGGIORNAMENTO 2026-10-07
 Provider attuale: Vercel, repository GigiPics/meteo-nowcast-regata, branch main.
+URL ATTUALE: https://meteo-nowcast-regata.vercel.app/
 Il precedente URL chatgpt.site non riceve gli aggiornamenti Vercel.
 Dopo ogni previsione definitiva l'agente esegue dalla radice Meteo:
 python tools/publish_forecast.py output/<previsione>/forecast_context.json
