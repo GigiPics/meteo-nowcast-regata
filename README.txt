@@ -1,4 +1,13 @@
-AGGIORNAMENTO 2026-10-02 — v44.26-auto-currwind
+PUBBLICAZIONE — AGGIORNAMENTO 2026-10-07
+Provider attuale: Vercel, repository GigiPics/meteo-nowcast-regata, branch main.
+Il precedente URL chatgpt.site non riceve gli aggiornamenti Vercel.
+Dopo ogni previsione definitiva l'agente esegue dalla radice Meteo:
+python tools/publish_forecast.py output/<previsione>/forecast_context.json
+Il comando sincronizza, invia la previsione e verifica deployment e dati remoti.
+La app controlla le nuove revisioni ogni due minuti quando visibile.
+GitHub Pages non viene avviato automaticamente. Dettagli: FORECAST-WORKFLOW.md.
+
+NOTE STORICHE — AGGIORNAMENTO 2026-10-02 — v44.26-auto-currwind
 Ricerca CurrWindNav automatica su data visibile e centro campo, ogni 2 minuti con app visibile.
 Data iniziale: oggi. Nessun valore nascosto sw_measures_date.
 Filtro obbligatorio 10 NM, coordinate valide e deduplicazione per id.
