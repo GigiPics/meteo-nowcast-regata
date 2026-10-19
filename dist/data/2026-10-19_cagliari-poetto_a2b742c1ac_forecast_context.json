@@ -1,0 +1,159 @@
+{
+  "schema_version": "forecast_context.v1",
+  "kind": "daily_forecast",
+  "event": {
+    "name": "Allenamento Poetto",
+    "class": "Nacra 17",
+    "venue": "Cagliari / Poetto",
+    "race_area": "Poetto centrale, punto confermato",
+    "valid_date": "2026-10-19",
+    "start_time_local": "14:00",
+    "time_window_local": {
+      "from": "14:00",
+      "to": "18:00"
+    },
+    "timezone": "Europe/Rome",
+    "forecast_center": {
+      "lat": 39.206,
+      "lon": 9.181,
+      "source": "coordinate già confermate utente"
+    }
+  },
+  "reliability": {
+    "overall": "media",
+    "wind": "10m multimodello incompleto,regime più affidabile della velocità",
+    "wave": "media modellata costiera",
+    "current": "bassa non misurata"
+  },
+  "wind": {
+    "central_speed_kn": "12–16",
+    "central_direction_deg": "110–135",
+    "direction_reference": "magnetic",
+    "gusts_kn": "19–25",
+    "hourly": [
+      {
+        "h": "14:00",
+        "speed_kn_range": [
+          13,
+          16
+        ],
+        "direction_deg_range": [
+          120,
+          135
+        ],
+        "gust_kn_range": [
+          19,
+          25
+        ],
+        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "alternative_direction": null
+      },
+      {
+        "h": "15:00",
+        "speed_kn_range": [
+          13,
+          16
+        ],
+        "direction_deg_range": [
+          120,
+          135
+        ],
+        "gust_kn_range": [
+          19,
+          25
+        ],
+        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "alternative_direction": null
+      },
+      {
+        "h": "16:00",
+        "speed_kn_range": [
+          12,
+          16
+        ],
+        "direction_deg_range": [
+          110,
+          130
+        ],
+        "gust_kn_range": [
+          19,
+          25
+        ],
+        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "alternative_direction": null
+      },
+      {
+        "h": "17:00",
+        "speed_kn_range": [
+          12,
+          16
+        ],
+        "direction_deg_range": [
+          110,
+          130
+        ],
+        "gust_kn_range": [
+          19,
+          25
+        ],
+        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "alternative_direction": null
+      },
+      {
+        "h": "18:00",
+        "speed_kn_range": [
+          12,
+          16
+        ],
+        "direction_deg_range": [
+          110,
+          130
+        ],
+        "gust_kn_range": [
+          19,
+          25
+        ],
+        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "alternative_direction": null
+      }
+    ],
+    "spread": "SEpersistente/S–SOalternativo20 pomeriggio",
+    "rotations": "persistenza15–20min fuori da rovesci"
+  },
+  "sea_state": {
+    "wave_height_m": "0.9–1.0",
+    "wave_period_s": "4.2–4.3",
+    "wave_direction": "148–151",
+    "direction_reference": "true",
+    "operational_note": "0,9–1,0 m da SE–SSE, circa148–151° veri, periodo4,2–4,3 s"
+  },
+  "temperature": {
+    "air_c": "22–25",
+    "water_c": "24,0–24,1",
+    "water_source": "Open-Meteo marine modellata",
+    "stability": "quasi neutra/variabile con pioggia e ramo caldo"
+  },
+  "tide_current": {
+    "current_expected": "non misurata",
+    "notes": "non inferire corrente da livello astronomico"
+  },
+  "convective_risk": "rovesci possibili",
+  "triggers": [
+    "persistenza rotazione15–20min",
+    "costa/aperto≥3kn",
+    "onda disallineata",
+    "base scura/virga/calo termico",
+    "SEpersistente oppureS/SO anticipato"
+  ],
+  "bias_applied": {
+    "source": "none",
+    "note": "nessun rilevamento osservativo acquisito"
+  },
+  "sources_meta": {
+    "notes": "raw/sources/2026-10-19_predictwind_poetto_2026-10-19_20/source_notes.md",
+    "screenshots": "1–7 rilette19ott"
+  },
+  "linked_report": "reports/2026-10-19_cagliari-poetto_a2b742c1ac/2026-10-19_previsione_meteo_poetto_1400.md",
+  "linked_report_html": "reports/2026-10-19_cagliari-poetto_a2b742c1ac/2026-10-19_previsione_meteo_poetto_1400.html",
+  "revision": "5048730ec2cf6cf7d1220f68c0dc61e2d9bc47aa2d861ffcb4156b961e1e70fc"
+}

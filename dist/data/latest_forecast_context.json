@@ -2,233 +2,158 @@
   "schema_version": "forecast_context.v1",
   "kind": "daily_forecast",
   "event": {
-    "name": "Allenamento weekend Poetto",
+    "name": "Allenamento Poetto",
     "class": "Nacra 17",
     "venue": "Cagliari / Poetto",
     "race_area": "Poetto centrale, punto confermato",
-    "valid_date": "2026-10-11",
-    "start_time_local": "07:29",
+    "valid_date": "2026-10-19",
+    "start_time_local": "14:00",
     "time_window_local": {
-      "from": "07:29",
-      "to": "16:00"
+      "from": "14:00",
+      "to": "18:00"
     },
     "timezone": "Europe/Rome",
     "forecast_center": {
       "lat": 39.206,
       "lon": 9.181,
-      "source": "coordinate confermate utente"
+      "source": "coordinate già confermate utente"
     }
   },
   "reliability": {
     "overall": "media",
-    "wind": "medio-alta settore, media intensità",
-    "wave": "media: griglia costiera",
-    "current": "bassa senza misure"
+    "wind": "10m multimodello incompleto,regime più affidabile della velocità",
+    "wave": "media modellata costiera",
+    "current": "bassa non misurata"
   },
   "wind": {
-    "central_speed_kn": "9–13 mattina,14–18 pomeriggio",
-    "central_direction_deg": "300–330",
-    "central_direction_label": "O–NO",
+    "central_speed_kn": "12–16",
+    "central_direction_deg": "110–135",
     "direction_reference": "magnetic",
-    "gusts_kn": "20–26",
+    "gusts_kn": "19–25",
     "hourly": [
-      {
-        "h": "07:29",
-        "speed_kn_range": [
-          9,
-          13
-        ],
-        "gust_kn_range": [
-          20,
-          26
-        ],
-        "direction_deg_range": [
-          300,
-          330
-        ],
-        "status": "operational_synthesis"
-      },
-      {
-        "h": "08:00",
-        "speed_kn_range": [
-          9,
-          13
-        ],
-        "gust_kn_range": [
-          20,
-          26
-        ],
-        "direction_deg_range": [
-          300,
-          330
-        ],
-        "status": "operational_synthesis"
-      },
-      {
-        "h": "09:00",
-        "speed_kn_range": [
-          9,
-          13
-        ],
-        "gust_kn_range": [
-          20,
-          26
-        ],
-        "direction_deg_range": [
-          300,
-          330
-        ],
-        "status": "operational_synthesis"
-      },
-      {
-        "h": "10:00",
-        "speed_kn_range": [
-          9,
-          13
-        ],
-        "gust_kn_range": [
-          20,
-          26
-        ],
-        "direction_deg_range": [
-          300,
-          330
-        ],
-        "status": "operational_synthesis"
-      },
-      {
-        "h": "11:00",
-        "speed_kn_range": [
-          12,
-          17
-        ],
-        "gust_kn_range": [
-          20,
-          26
-        ],
-        "direction_deg_range": [
-          300,
-          330
-        ],
-        "status": "operational_synthesis"
-      },
-      {
-        "h": "12:00",
-        "speed_kn_range": [
-          12,
-          17
-        ],
-        "gust_kn_range": [
-          20,
-          26
-        ],
-        "direction_deg_range": [
-          300,
-          330
-        ],
-        "status": "operational_synthesis"
-      },
-      {
-        "h": "13:00",
-        "speed_kn_range": [
-          12,
-          17
-        ],
-        "gust_kn_range": [
-          20,
-          26
-        ],
-        "direction_deg_range": [
-          300,
-          330
-        ],
-        "status": "operational_synthesis"
-      },
       {
         "h": "14:00",
         "speed_kn_range": [
-          14,
-          18
-        ],
-        "gust_kn_range": [
-          20,
-          26
+          13,
+          16
         ],
         "direction_deg_range": [
-          300,
-          330
+          120,
+          135
         ],
-        "status": "operational_synthesis"
+        "gust_kn_range": [
+          19,
+          25
+        ],
+        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "alternative_direction": null
       },
       {
         "h": "15:00",
         "speed_kn_range": [
-          14,
-          18
-        ],
-        "gust_kn_range": [
-          20,
-          26
+          13,
+          16
         ],
         "direction_deg_range": [
-          300,
-          330
+          120,
+          135
         ],
-        "status": "operational_synthesis"
+        "gust_kn_range": [
+          19,
+          25
+        ],
+        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "alternative_direction": null
       },
       {
         "h": "16:00",
         "speed_kn_range": [
-          14,
-          18
-        ],
-        "gust_kn_range": [
-          20,
-          26
+          12,
+          16
         ],
         "direction_deg_range": [
-          300,
-          330
+          110,
+          130
         ],
-        "status": "operational_synthesis"
+        "gust_kn_range": [
+          19,
+          25
+        ],
+        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "alternative_direction": null
+      },
+      {
+        "h": "17:00",
+        "speed_kn_range": [
+          12,
+          16
+        ],
+        "direction_deg_range": [
+          110,
+          130
+        ],
+        "gust_kn_range": [
+          19,
+          25
+        ],
+        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "alternative_direction": null
+      },
+      {
+        "h": "18:00",
+        "speed_kn_range": [
+          12,
+          16
+        ],
+        "direction_deg_range": [
+          110,
+          130
+        ],
+        "gust_kn_range": [
+          19,
+          25
+        ],
+        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "alternative_direction": null
       }
     ],
-    "spread": "ramo alto26–30 kn raffiche, alternativo debole",
-    "rotations": "conferma persistent15–20 minuti"
+    "spread": "SEpersistente/S–SOalternativo20 pomeriggio",
+    "rotations": "persistenza15–20min fuori da rovesci"
   },
   "sea_state": {
-    "wave_height_m": "0.30–0.45",
-    "wave_period_s": "2.8–3.1",
-    "wave_direction": "ONO–NO",
+    "wave_height_m": "0.9–1.0",
+    "wave_period_s": "4.2–4.3",
+    "wave_direction": "148–151",
     "direction_reference": "true",
-    "operational_note": "0,30–0,45 m, periodo circa2,8–3,1 s, da ONO–NO: chop corto più allineato al vento, crescente con il rinforzo"
+    "operational_note": "0,9–1,0 m da SE–SSE, circa148–151° veri, periodo4,2–4,3 s"
   },
   "temperature": {
-    "air_c": "19–26",
-    "water_c": "circa25,0",
-    "water_source": "modellata Open-Meteo marine, non misura",
-    "stability": "Al mattino aria più fresca del mare, mixing favorito; nelle ore centrali differenziale ridotto, strato quasi neutro e localmente debolmente stabile nel ramo più caldo."
+    "air_c": "22–25",
+    "water_c": "24,0–24,1",
+    "water_source": "Open-Meteo marine modellata",
+    "stability": "quasi neutra/variabile con pioggia e ramo caldo"
   },
   "tide_current": {
     "current_expected": "non misurata",
-    "notes": "non dedurre corrente dalla sola marea"
+    "notes": "non inferire corrente da livello astronomico"
   },
+  "convective_risk": "rovesci possibili",
   "triggers": [
-    "persistenza NO15–20min",
-    "costa/aperto differenza≥3kn",
-    "vento base>18kn",
-    "buchi estesi",
-    "pioggia/calo termico"
+    "persistenza rotazione15–20min",
+    "costa/aperto≥3kn",
+    "onda disallineata",
+    "base scura/virga/calo termico",
+    "SEpersistente oppureS/SO anticipato"
   ],
   "bias_applied": {
     "source": "none",
-    "note": "osservazioni non acquisite"
+    "note": "nessun rilevamento osservativo acquisito"
   },
   "sources_meta": {
-    "notes": "raw/sources/2026-10-09_predictwind_poetto_2026-10-10_11/source_notes.md",
-    "excluded": "5.jpg data8–9 ottobre"
+    "notes": "raw/sources/2026-10-19_predictwind_poetto_2026-10-19_20/source_notes.md",
+    "screenshots": "1–7 rilette19ott"
   },
-  "linked_report": "reports/2026-10-11_cagliari-poetto_95ae9f5e08/2026-10-11_previsione_meteo_poetto_0729.md",
-  "linked_report_html": "reports/2026-10-11_cagliari-poetto_95ae9f5e08/2026-10-11_previsione_meteo_poetto_0729.html",
-  "revision": "1878468d8e776004d9fdb146f53f157019b20c8afcb0db0fe49ca1330d35e34a"
+  "linked_report": "reports/2026-10-19_cagliari-poetto_a2b742c1ac/2026-10-19_previsione_meteo_poetto_1400.md",
+  "linked_report_html": "reports/2026-10-19_cagliari-poetto_a2b742c1ac/2026-10-19_previsione_meteo_poetto_1400.html",
+  "revision": "5048730ec2cf6cf7d1220f68c0dc61e2d9bc47aa2d861ffcb4156b961e1e70fc"
 }
