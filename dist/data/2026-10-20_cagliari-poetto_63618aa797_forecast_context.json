@@ -1,0 +1,261 @@
+{
+  "schema_version": "forecast_context.v1",
+  "kind": "daily_forecast",
+  "event": {
+    "name": "Allenamento Poetto",
+    "class": "Nacra 17",
+    "venue": "Cagliari / Poetto",
+    "race_area": "Poetto centrale, punto confermato",
+    "valid_date": "2026-10-20",
+    "start_time_local": "08:00",
+    "time_window_local": {
+      "from": "08:00",
+      "to": "18:00"
+    },
+    "timezone": "Europe/Rome",
+    "forecast_center": {
+      "lat": 39.206,
+      "lon": 9.181,
+      "source": "coordinate già confermate utente"
+    }
+  },
+  "reliability": {
+    "overall": "medio-bassa",
+    "wind": "10m multimodello incompleto,regime più affidabile della velocità",
+    "wave": "media modellata costiera",
+    "current": "bassa non misurata"
+  },
+  "wind": {
+    "central_speed_kn": "11–17,8–14finale",
+    "central_direction_deg": "130–160; alternativa170–220 finale",
+    "direction_reference": "magnetic",
+    "gusts_kn": "20–27,isolato32",
+    "hourly": [
+      {
+        "h": "08:00",
+        "speed_kn_range": [
+          11,
+          15
+        ],
+        "direction_deg_range": [
+          130,
+          150
+        ],
+        "gust_kn_range": [
+          20,
+          27
+        ],
+        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "alternative_direction": null
+      },
+      {
+        "h": "09:00",
+        "speed_kn_range": [
+          11,
+          15
+        ],
+        "direction_deg_range": [
+          130,
+          150
+        ],
+        "gust_kn_range": [
+          20,
+          27
+        ],
+        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "alternative_direction": null
+      },
+      {
+        "h": "10:00",
+        "speed_kn_range": [
+          12,
+          17
+        ],
+        "direction_deg_range": [
+          130,
+          150
+        ],
+        "gust_kn_range": [
+          20,
+          27
+        ],
+        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "alternative_direction": null
+      },
+      {
+        "h": "11:00",
+        "speed_kn_range": [
+          12,
+          17
+        ],
+        "direction_deg_range": [
+          130,
+          150
+        ],
+        "gust_kn_range": [
+          20,
+          27
+        ],
+        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "alternative_direction": null
+      },
+      {
+        "h": "12:00",
+        "speed_kn_range": [
+          12,
+          17
+        ],
+        "direction_deg_range": [
+          130,
+          150
+        ],
+        "gust_kn_range": [
+          20,
+          27
+        ],
+        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "alternative_direction": null
+      },
+      {
+        "h": "13:00",
+        "speed_kn_range": [
+          12,
+          17
+        ],
+        "direction_deg_range": [
+          130,
+          150
+        ],
+        "gust_kn_range": [
+          20,
+          27
+        ],
+        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "alternative_direction": null
+      },
+      {
+        "h": "14:00",
+        "speed_kn_range": [
+          11,
+          16
+        ],
+        "direction_deg_range": [
+          130,
+          180
+        ],
+        "gust_kn_range": [
+          20,
+          27
+        ],
+        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "alternative_direction": "SEpersistent versus S–SO; do not average regimes"
+      },
+      {
+        "h": "15:00",
+        "speed_kn_range": [
+          11,
+          16
+        ],
+        "direction_deg_range": [
+          130,
+          180
+        ],
+        "gust_kn_range": [
+          20,
+          27
+        ],
+        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "alternative_direction": "SEpersistent versus S–SO; do not average regimes"
+      },
+      {
+        "h": "16:00",
+        "speed_kn_range": [
+          8,
+          14
+        ],
+        "direction_deg_range": [
+          130,
+          220
+        ],
+        "gust_kn_range": [
+          20,
+          27
+        ],
+        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "alternative_direction": "SEpersistent versus S–SO; do not average regimes"
+      },
+      {
+        "h": "17:00",
+        "speed_kn_range": [
+          8,
+          14
+        ],
+        "direction_deg_range": [
+          130,
+          220
+        ],
+        "gust_kn_range": [
+          20,
+          27
+        ],
+        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "alternative_direction": "SEpersistent versus S–SO; do not average regimes"
+      },
+      {
+        "h": "18:00",
+        "speed_kn_range": [
+          8,
+          14
+        ],
+        "direction_deg_range": [
+          130,
+          220
+        ],
+        "gust_kn_range": [
+          20,
+          27
+        ],
+        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "alternative_direction": "SEpersistent versus S–SO; do not average regimes"
+      }
+    ],
+    "spread": "SEpersistente/S–SOalternativo20 pomeriggio",
+    "rotations": "persistenza15–20min fuori da rovesci"
+  },
+  "sea_state": {
+    "wave_height_m": "1.2–1.4",
+    "wave_period_s": "5–6",
+    "wave_direction": "146–149",
+    "direction_reference": "true",
+    "operational_note": "1,2 m alle08, 1,3–1,4 m nelle ore centrali/finale, da SE–SSE146–149° veri, periodo5–6 s"
+  },
+  "temperature": {
+    "air_c": "21–25",
+    "water_c": "23,9–24,0",
+    "water_source": "Open-Meteo marine modellata",
+    "stability": "quasi neutra/variabile con pioggia e ramo caldo"
+  },
+  "tide_current": {
+    "current_expected": "non misurata",
+    "notes": "non inferire corrente da livello astronomico"
+  },
+  "convective_risk": "temporali anche forti isolati nel quadro regionale; rischio outflow",
+  "triggers": [
+    "persistenza rotazione15–20min",
+    "costa/aperto≥3kn",
+    "onda disallineata",
+    "base scura/virga/calo termico",
+    "SEpersistente oppureS/SO anticipato"
+  ],
+  "bias_applied": {
+    "source": "none",
+    "note": "nessun rilevamento osservativo acquisito"
+  },
+  "sources_meta": {
+    "notes": "raw/sources/2026-10-19_predictwind_poetto_2026-10-19_20/source_notes.md",
+    "screenshots": "1–7 rilette19ott"
+  },
+  "linked_report": "reports/2026-10-20_cagliari-poetto_63618aa797/2026-10-20_previsione_meteo_poetto_0800.md",
+  "linked_report_html": "reports/2026-10-20_cagliari-poetto_63618aa797/2026-10-20_previsione_meteo_poetto_0800.html",
+  "revision": "1eb0d78eca385dd8b9eedcecd037e16cc09857ab80bff04d37132c50698329cd"
+}
