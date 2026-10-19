@@ -2,24 +2,26 @@
 
 Allenamento **08:00–18:00 CEST**, punto confermato **39.206000° N, 9.181000° E**. Direzioni vento **magnetiche**. Affidabilità **medio-bassa**; incertezza su intensità, orario della rotazione e fenomeni convettivi.
 
-> **Quadro rapido:** SE11–17 kn nella prima parte, possibile calo8–14 nel finale; raffiche20–27 e picchi convettivi non descritti dal vento medio kn. Aria 21–25°C, acqua **23,9–24,0°C modellata, non misurata**. Differenziale aria−acqua circa−2/+1°C oggi e−3/+1°C domani: strato quasi neutro o debolmente instabile nel ramo fresco, localmente debolmente stabile nel ramo caldo.
+> **Quadro rapido aggiornato:** SE **16–20 kn fra08 e12**, poi **14–18 kn fino alle15**, possibile calo **10–15 kn dalle16**. Raffiche **22–27 kn**, con segnale isolato **32 kn alle08**. Aria21–25°C, acqua **23,9–24,0°C modellata**; aria−acqua circa−3/+1°C. Rischio di rovesci e temporali resta il limite principale alla continuità della finestra.
 
 ## Evoluzione nella finestra
 
-| Ora locale | Vento di fondo centrale | Settore magnetico | Raffiche | Significato operativo |
+| Ora locale | Vento centrale | Direzione magnetica | Raffiche | Scenario alternativo |
 |---|---|---|---|---|
-| 08–10 | 11–15 kn | SE130–150°; alternativa E90–120° iniziale | 20–25 kn; picco isolato32 | Pioggia/outflow possono dominare il dato medio |
-| 10–14 | 12–17 kn | SE–SSE130–160° | 21–27 kn; ramo debole11–15 | Intensità poco concorde; rotazione versoS non condivisa |
-| 14–16 | 11–16 kn | SE–S130–180° | 20–25 kn | SEpersistente oppureS anticipato, scenari distinti |
-| 16–18 | 8–14 kn di fondo | SE130–150° oppureS–SO170–220° | 16–25 kn; possibili outflow superiori | Calo modellato non basta a escludere rinforzi da rovescio |
+| 08–10 | 16–20 kn | SE130–150°; alternativaE90–120° iniziale | 22–27 kn; isolato32 alle08 | PWG26 alle08, AROME21–22; PWE11–12 |
+| 10–12 | 16–20 kn | SE–SSE130–160° | 23–27 kn | ECMWF16–18, AROME21, ICON18–20; ramo basso10–14 |
+| 12–15 | 14–18 kn | SE130–160° oppureS anticipato | 20–26 kn | AROME18–21; ICON scende13→12 già13–14 |
+| 16–18 | 10–15 kn | SE130–150° oppureS–SO170–220° | 16–25 kn | Alle18 ECMWF7, GFS5, UKMO6; AROME19: spread ancora ampio |
 
-La tabella superficiale multimodello completa non è visibile: la riga velocità disponibile è circa14–15 kn oggi e13–15 kn domani fino al primo pomeriggio, ma senza identificativo di modello leggibile. Le fasce sono **sintesi operative**, non valori10m trascritti da ciascun modello; il vento a40m non è stato trasformato in vento alla superficie. Per Nacra17 contano vento base e durata dei buchi sul chop, non solo la punta.
+## Lettura dei modelli e scenari
 
-## Scenari e segnali di conferma
+La nuova tabella10m elimina l'incertezza del modello non identificato. ECMWF08–12 dà15–18 kn; AROME21–22 e ICON18–20 supportano una mattina più sostenuta della prima emissione. PWE resta10–12, GFS6–14: non c'è consenso sull'intensità. **PWG26 kn alle08 è un picco isolato del singolo modello, non il valore centrale per tutta la mattina.** Il vento a40m è distinto e non sostituisce il dato superficiale.
 
-- **Basso:** 7–11 kn, raffiche11–17 nel ramo debole, rotazioneS anticipata e buchi. Conferma con zone lucide ampie e vento base basso su più punti.
-- **Centrale:** SE11–17 kn, possibileSSE/S progressivo e calo finale8–14, raffiche20–27. Confermare il cambio settore solo se persiste15–20 minuti fuori dal singolo rovescio.
-- **Alto:** SE17–21 kn, raffiche26–32; raffiche da temporale possono superare l'inviluppo modellistico. Aumento del vento base su più zone conferma il rinforzo; una sola linea di raffica richiede invece valutazione convettiva.
+- **Basso:** 8–12 kn nella prima parte,5–10 nel finale, raffiche11–17; da confermare con pressione bassa diffusa.
+- **Centrale:** SE16–20 kn prima parte,14–18 nelle ore centrali,10–15 nel finale, raffiche22–27.
+- **Alto:** SE20–23 kn, episodio26 kn alle08, raffiche26–32; outflow temporaleschi possono superare questo inviluppo.
+
+Direzione aggiornata PWG alle11 circa100° prima di tornareSE: possibile escursione orientale temporanea. Non interpretarla come rotazione definitivaS–SO. Quest'ultima resta un'alternativa distinta dalSE persistente di AROME.
 
 ## Campo Poetto: differenze locali
 

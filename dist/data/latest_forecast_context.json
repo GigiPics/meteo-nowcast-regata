@@ -21,106 +21,106 @@
   },
   "reliability": {
     "overall": "medio-bassa",
-    "wind": "10m multimodello incompleto,regime più affidabile della velocità",
+    "wind": "media: velocità10m completa,spread multimodello esplicito",
     "wave": "media modellata costiera",
     "current": "bassa non misurata"
   },
   "wind": {
-    "central_speed_kn": "11–17,8–14finale",
+    "central_speed_kn": "16–20prima parte,14–18centrali,10–15finale",
     "central_direction_deg": "130–160; alternativa170–220 finale",
     "direction_reference": "magnetic",
-    "gusts_kn": "20–27,isolato32",
+    "gusts_kn": "22–27,isolato32alle08",
     "hourly": [
       {
         "h": "08:00",
         "speed_kn_range": [
-          11,
-          15
+          16,
+          20
         ],
         "direction_deg_range": [
           130,
           150
         ],
         "gust_kn_range": [
-          20,
+          22,
           27
         ],
-        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "status": "operational_synthesis_complete_10m_multimodel_table",
         "alternative_direction": null
       },
       {
         "h": "09:00",
         "speed_kn_range": [
-          11,
-          15
+          16,
+          20
         ],
         "direction_deg_range": [
           130,
           150
         ],
         "gust_kn_range": [
-          20,
+          22,
           27
         ],
-        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "status": "operational_synthesis_complete_10m_multimodel_table",
         "alternative_direction": null
       },
       {
         "h": "10:00",
         "speed_kn_range": [
-          12,
-          17
+          16,
+          20
         ],
         "direction_deg_range": [
           130,
           150
         ],
         "gust_kn_range": [
-          20,
+          22,
           27
         ],
-        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "status": "operational_synthesis_complete_10m_multimodel_table",
         "alternative_direction": null
       },
       {
         "h": "11:00",
         "speed_kn_range": [
-          12,
-          17
+          16,
+          20
         ],
         "direction_deg_range": [
           130,
           150
         ],
         "gust_kn_range": [
-          20,
+          22,
           27
         ],
-        "status": "operational_synthesis_incomplete_multimodel_10m_table",
-        "alternative_direction": null
+        "status": "operational_synthesis_complete_10m_multimodel_table",
+        "alternative_direction": "PWG100magnetic;otherSE/SSE;S–SOlaterseparate"
       },
       {
         "h": "12:00",
         "speed_kn_range": [
-          12,
-          17
+          16,
+          20
         ],
         "direction_deg_range": [
           130,
           150
         ],
         "gust_kn_range": [
-          20,
+          22,
           27
         ],
-        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "status": "operational_synthesis_complete_10m_multimodel_table",
         "alternative_direction": null
       },
       {
         "h": "13:00",
         "speed_kn_range": [
-          12,
-          17
+          14,
+          18
         ],
         "direction_deg_range": [
           130,
@@ -128,16 +128,16 @@
         ],
         "gust_kn_range": [
           20,
-          27
+          26
         ],
-        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "status": "operational_synthesis_complete_10m_multimodel_table",
         "alternative_direction": null
       },
       {
         "h": "14:00",
         "speed_kn_range": [
-          11,
-          16
+          14,
+          18
         ],
         "direction_deg_range": [
           130,
@@ -145,16 +145,16 @@
         ],
         "gust_kn_range": [
           20,
-          27
+          26
         ],
-        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "status": "operational_synthesis_complete_10m_multimodel_table",
         "alternative_direction": "SEpersistent versus S–SO; do not average regimes"
       },
       {
         "h": "15:00",
         "speed_kn_range": [
-          11,
-          16
+          14,
+          18
         ],
         "direction_deg_range": [
           130,
@@ -162,65 +162,184 @@
         ],
         "gust_kn_range": [
           20,
-          27
+          26
         ],
-        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "status": "operational_synthesis_complete_10m_multimodel_table",
         "alternative_direction": "SEpersistent versus S–SO; do not average regimes"
       },
       {
         "h": "16:00",
         "speed_kn_range": [
-          8,
-          14
+          10,
+          15
         ],
         "direction_deg_range": [
           130,
           220
         ],
         "gust_kn_range": [
-          20,
-          27
+          16,
+          25
         ],
-        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "status": "operational_synthesis_complete_10m_multimodel_table",
         "alternative_direction": "SEpersistent versus S–SO; do not average regimes"
       },
       {
         "h": "17:00",
         "speed_kn_range": [
-          8,
-          14
+          10,
+          15
         ],
         "direction_deg_range": [
           130,
           220
         ],
         "gust_kn_range": [
-          20,
-          27
+          16,
+          25
         ],
-        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "status": "operational_synthesis_complete_10m_multimodel_table",
         "alternative_direction": "SEpersistent versus S–SO; do not average regimes"
       },
       {
         "h": "18:00",
         "speed_kn_range": [
-          8,
-          14
+          10,
+          15
         ],
         "direction_deg_range": [
           130,
           220
         ],
         "gust_kn_range": [
-          20,
-          27
+          16,
+          25
         ],
-        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "status": "operational_synthesis_complete_10m_multimodel_table",
         "alternative_direction": "SEpersistent versus S–SO; do not average regimes"
       }
     ],
-    "spread": "SEpersistente/S–SOalternativo20 pomeriggio",
-    "rotations": "persistenza15–20min fuori da rovesci"
+    "spread": "PWE10–12 versusAROME21–22mattino;PWG26alle08isolato;AROME19alle18contro5–7altri",
+    "rotations": "SEpersistente oS–SO anticipato; PWG escursioneE100°alle11",
+    "model_speed_10m_kn": {
+      "PWG": [
+        26,
+        17,
+        20,
+        21,
+        20,
+        17,
+        17,
+        16,
+        14,
+        13,
+        13
+      ],
+      "PWE": [
+        12,
+        12,
+        11,
+        10,
+        10,
+        12,
+        13,
+        13,
+        13,
+        12,
+        10
+      ],
+      "PWAi": [
+        17,
+        17,
+        18,
+        18,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12
+      ],
+      "ECMWF": [
+        15,
+        16,
+        16,
+        17,
+        18,
+        18,
+        17,
+        17,
+        13,
+        13,
+        7
+      ],
+      "GFS": [
+        6,
+        7,
+        11,
+        13,
+        14,
+        14,
+        14,
+        12,
+        12,
+        13,
+        5
+      ],
+      "UKMO": [
+        8,
+        9,
+        10,
+        10,
+        11,
+        11,
+        11,
+        11,
+        10,
+        8,
+        6
+      ],
+      "AROME": [
+        21,
+        22,
+        21,
+        21,
+        21,
+        20,
+        19,
+        18,
+        14,
+        7,
+        19
+      ],
+      "ICON": [
+        19,
+        19,
+        19,
+        20,
+        18,
+        13,
+        12,
+        12,
+        12,
+        14,
+        11
+      ],
+      "AIFS": [
+        9,
+        9,
+        9,
+        9,
+        9,
+        10,
+        10,
+        10,
+        10,
+        10,
+        10
+      ]
+    }
   },
   "sea_state": {
     "wave_height_m": "1.2–1.4",
@@ -253,9 +372,10 @@
   },
   "sources_meta": {
     "notes": "raw/sources/2026-10-19_predictwind_poetto_2026-10-19_20/source_notes.md",
-    "screenshots": "1–7 rilette19ott"
+    "screenshots": "1–7 rilette19ott",
+    "revision_note": "Sostituita3.jpg con tabella10m completa; vecchia conservata superseded; altri dati invariati"
   },
   "linked_report": "reports/2026-10-20_cagliari-poetto_63618aa797/2026-10-20_previsione_meteo_poetto_0800.md",
   "linked_report_html": "reports/2026-10-20_cagliari-poetto_63618aa797/2026-10-20_previsione_meteo_poetto_0800.html",
-  "revision": "1eb0d78eca385dd8b9eedcecd037e16cc09857ab80bff04d37132c50698329cd"
+  "revision": "5144f0e56ada361048aa41f7212d6fafbd2c75fe0df9145ecb67eaeeb1aa791f"
 }
