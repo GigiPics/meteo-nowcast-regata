@@ -21,104 +21,169 @@
   },
   "reliability": {
     "overall": "media",
-    "wind": "10m multimodello incompleto,regime più affidabile della velocità",
+    "wind": "media: velocità10m completa,spread multimodello esplicito",
     "wave": "media modellata costiera",
     "current": "bassa non misurata"
   },
   "wind": {
-    "central_speed_kn": "12–16",
+    "central_speed_kn": "15–18,localmente19finale",
     "central_direction_deg": "110–135",
     "direction_reference": "magnetic",
-    "gusts_kn": "19–25",
+    "gusts_kn": "20–25",
     "hourly": [
       {
         "h": "14:00",
         "speed_kn_range": [
-          13,
-          16
+          15,
+          18
         ],
         "direction_deg_range": [
           120,
           135
         ],
         "gust_kn_range": [
-          19,
+          20,
           25
         ],
-        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "status": "operational_synthesis_complete_10m_multimodel_table",
         "alternative_direction": null
       },
       {
         "h": "15:00",
         "speed_kn_range": [
-          13,
-          16
+          15,
+          18
         ],
         "direction_deg_range": [
           120,
           135
         ],
         "gust_kn_range": [
-          19,
+          20,
           25
         ],
-        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "status": "operational_synthesis_complete_10m_multimodel_table",
         "alternative_direction": null
       },
       {
         "h": "16:00",
         "speed_kn_range": [
-          12,
-          16
+          15,
+          19
         ],
         "direction_deg_range": [
           110,
           130
         ],
         "gust_kn_range": [
-          19,
+          20,
           25
         ],
-        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "status": "operational_synthesis_complete_10m_multimodel_table",
         "alternative_direction": null
       },
       {
         "h": "17:00",
         "speed_kn_range": [
-          12,
-          16
+          15,
+          19
         ],
         "direction_deg_range": [
           110,
           130
         ],
         "gust_kn_range": [
-          19,
+          20,
           25
         ],
-        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "status": "operational_synthesis_complete_10m_multimodel_table",
         "alternative_direction": null
       },
       {
         "h": "18:00",
         "speed_kn_range": [
-          12,
-          16
+          15,
+          19
         ],
         "direction_deg_range": [
           110,
           130
         ],
         "gust_kn_range": [
-          19,
+          20,
           25
         ],
-        "status": "operational_synthesis_incomplete_multimodel_10m_table",
+        "status": "operational_synthesis_complete_10m_multimodel_table",
         "alternative_direction": null
       }
     ],
-    "spread": "SEpersistente/S–SOalternativo20 pomeriggio",
-    "rotations": "persistenza15–20min fuori da rovesci"
+    "spread": "basso10–13,alto18–20",
+    "rotations": "persistenza15–20min fuori da rovesci",
+    "model_speed_10m_kn": {
+      "PWG": [
+        16,
+        17,
+        17,
+        18,
+        19
+      ],
+      "PWE": [
+        17,
+        17,
+        17,
+        16,
+        16
+      ],
+      "PWAi": [
+        15,
+        15,
+        15,
+        15,
+        15
+      ],
+      "ECMWF": [
+        15,
+        15,
+        14,
+        14,
+        14
+      ],
+      "GFS": [
+        13,
+        13,
+        13,
+        12,
+        10
+      ],
+      "UKMO": [
+        11,
+        12,
+        12,
+        11,
+        10
+      ],
+      "AROME": [
+        18,
+        18,
+        20,
+        20,
+        18
+      ],
+      "ICON": [
+        17,
+        17,
+        16,
+        16,
+        17
+      ],
+      "AIFS": [
+        11,
+        11,
+        11,
+        11,
+        11
+      ]
+    }
   },
   "sea_state": {
     "wave_height_m": "0.9–1.0",
@@ -151,9 +216,10 @@
   },
   "sources_meta": {
     "notes": "raw/sources/2026-10-19_predictwind_poetto_2026-10-19_20/source_notes.md",
-    "screenshots": "1–7 rilette19ott"
+    "screenshots": "1–7 rilette19ott",
+    "revision_note": "Sostituita3.jpg con tabella10m completa; vecchia conservata superseded; altri dati invariati"
   },
   "linked_report": "reports/2026-10-19_cagliari-poetto_a2b742c1ac/2026-10-19_previsione_meteo_poetto_1400.md",
   "linked_report_html": "reports/2026-10-19_cagliari-poetto_a2b742c1ac/2026-10-19_previsione_meteo_poetto_1400.html",
-  "revision": "5048730ec2cf6cf7d1220f68c0dc61e2d9bc47aa2d861ffcb4156b961e1e70fc"
+  "revision": "93360f8007aaa4efa099f5e616ffb837b2c72daa7b55dced1f1596a4cf1b4b38"
 }

@@ -1,6 +1,6 @@
 {
   "schema_version": "forecast_index.v1",
-  "updated_at": "2026-10-19T09:04:19+02:00",
+  "updated_at": "2026-10-19T09:06:15+02:00",
   "forecasts": [
     {
       "id": "2026-10-20_cagliari-poetto_63618aa797",
@@ -31,9 +31,9 @@
         "source": "coordinate già confermate utente"
       },
       "path": "data/2026-10-19_cagliari-poetto_a2b742c1ac_forecast_context.json",
-      "revision": "5048730ec2cf6cf7d1220f68c0dc61e2d9bc47aa2d861ffcb4156b961e1e70fc",
+      "revision": "93360f8007aaa4efa099f5e616ffb837b2c72daa7b55dced1f1596a4cf1b4b38",
       "is_latest": false,
-      "issued_at": "2026-10-19T09:03:37+02:00",
+      "issued_at": "2026-10-19T09:06:15+02:00",
       "linked_report_html": "reports/2026-10-19_cagliari-poetto_a2b742c1ac/2026-10-19_previsione_meteo_poetto_1400.html"
     },
     {
