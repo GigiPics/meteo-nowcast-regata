@@ -6,7 +6,7 @@
     "class": "Nacra 17",
     "venue": "Cagliari / Poetto",
     "race_area": "Poetto centrale",
-    "valid_date": "2026-11-03",
+    "valid_date": "2026-11-04",
     "start_time_local": "08:00",
     "time_window_local": {
       "from": "08:00",
@@ -20,110 +20,186 @@
   },
   "reliability": {
     "overall": "media",
-    "wind": "medio-bassa transizione"
+    "wind": "medio-alta settore,differenze intensità"
   },
   "wind": {
-    "central_speed_kn": "6–9mattino,1–5centrali,5–8pomeriggio",
-    "central_direction_deg": "310–340 iniziale;170–200 oppure280 finale",
-    "gusts_kn": "9–12iniziali;7–16finale",
+    "central_speed_kn": "12–16 finestra10–13",
+    "central_direction_deg": "110–125",
+    "direction_reference": "magnetic",
+    "gusts_kn": "18–22",
     "hourly": [
       {
         "h": "08:00",
         "speed_kn_range": [
-          6,
-          9
+          9,
+          13
+        ],
+        "direction_deg_range": [
+          80,
+          120
+        ],
+        "gust_kn_range": [
+          13,
+          20
         ]
       },
       {
         "h": "09:00",
         "speed_kn_range": [
-          6,
-          9
+          9,
+          13
+        ],
+        "direction_deg_range": [
+          80,
+          120
+        ],
+        "gust_kn_range": [
+          13,
+          20
         ]
       },
       {
         "h": "10:00",
         "speed_kn_range": [
-          5,
-          7
+          12,
+          16
+        ],
+        "direction_deg_range": [
+          110,
+          140
+        ],
+        "gust_kn_range": [
+          18,
+          22
         ]
       },
       {
         "h": "11:00",
         "speed_kn_range": [
-          1,
-          5
+          12,
+          16
+        ],
+        "direction_deg_range": [
+          110,
+          140
+        ],
+        "gust_kn_range": [
+          18,
+          22
         ]
       },
       {
         "h": "12:00",
         "speed_kn_range": [
-          1,
-          5
+          12,
+          16
+        ],
+        "direction_deg_range": [
+          110,
+          140
+        ],
+        "gust_kn_range": [
+          18,
+          22
         ]
       },
       {
         "h": "13:00",
         "speed_kn_range": [
-          1,
-          5
+          12,
+          16
+        ],
+        "direction_deg_range": [
+          110,
+          140
+        ],
+        "gust_kn_range": [
+          18,
+          22
         ]
       },
       {
         "h": "14:00",
         "speed_kn_range": [
-          1,
-          5
+          9,
+          13
+        ],
+        "direction_deg_range": [
+          110,
+          140
+        ],
+        "gust_kn_range": [
+          13,
+          20
         ]
       },
       {
         "h": "15:00",
         "speed_kn_range": [
-          5,
-          8
+          9,
+          13
+        ],
+        "direction_deg_range": [
+          110,
+          140
+        ],
+        "gust_kn_range": [
+          13,
+          20
         ]
       },
       {
         "h": "16:00",
         "speed_kn_range": [
-          5,
-          8
+          9,
+          13
+        ],
+        "direction_deg_range": [
+          110,
+          140
+        ],
+        "gust_kn_range": [
+          13,
+          20
         ]
       }
     ],
-    "rotations": "NOversoS oppureO,regimi separati"
+    "rotations": "E→ESE/SE,persistenza15–20min",
+    "spread": "PWG19–20alto,ramobasso5–9"
   },
   "temperature": {
-    "water_c": "21.3–21.4",
+    "water_c": 21.2,
     "water_source": "modellata",
-    "air_c": "11–20"
+    "air_c": "17–22,ramofreddo12–15inizio"
   },
   "sea_state": {
-    "wave_height_m": 0.14,
-    "wave_period_s": "4–4.5",
-    "operational_note": "griglia costiera"
+    "wave_height_m": "0.44–0.66",
+    "wave_period_s": "3–3.8",
+    "wave_direction": "149–159true",
+    "operational_note": "chop in crescita"
   },
   "tide_current": {
     "current_expected": "non misurata"
   },
   "triggers": [
-    "NOcontinuo≥6kn",
-    "calo<5kn",
-    "nuova banda persistente15–20min",
-    "costa/aperto≥3kn"
+    "bandaESEcontinua≥11–12kn",
+    "sotto9–10alle10:30",
+    "rotazione persistente15–20min",
+    "vento in calo chop formato",
+    "basi scurepioggia"
   ],
   "recommended_window": {
-    "from": "08:00",
-    "to": "10:30",
-    "alternative": "14:30–16 condizionata"
+    "from": "10:00",
+    "to": "13:00",
+    "core": "10:30–12:30"
   },
   "bias_applied": {
     "source": "none"
   },
   "sources_meta": {
-    "notes": "raw/sources/2026-11-02_predictwind_poetto_2026-11-03/source_notes.md"
+    "notes": "raw/sources/2026-11-03_predictwind_poetto_2026-11-04/source_notes.md"
   },
-  "linked_report": "reports/2026-11-03_cagliari-poetto_dad1fb21d1/2026-11-03_previsione_meteo_poetto_0800.md",
-  "linked_report_html": "reports/2026-11-03_cagliari-poetto_dad1fb21d1/2026-11-03_previsione_meteo_poetto_0800.html",
-  "revision": "540b1eeb60dde448d74c89ce8750c3821f57c6d8e186cdad4998e7cb7c8bcaf3"
+  "linked_report": "reports/2026-11-04_cagliari-poetto_dad1fb21d1/2026-11-04_previsione_meteo_poetto_0800.md",
+  "linked_report_html": "reports/2026-11-04_cagliari-poetto_dad1fb21d1/2026-11-04_previsione_meteo_poetto_0800.html",
+  "revision": "8a8d97356196c010cba546acd1e7958a3af2a86a3ddd9ad242e87f22579489f1"
 }
