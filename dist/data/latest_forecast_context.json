@@ -6,11 +6,11 @@
     "class": "Nacra 17",
     "venue": "Cagliari / Poetto",
     "race_area": "Poetto centrale",
-    "valid_date": "2026-11-04",
+    "valid_date": "2026-11-05",
     "start_time_local": "08:00",
     "time_window_local": {
       "from": "08:00",
-      "to": "16:00"
+      "to": "12:30"
     },
     "forecast_center": {
       "lat": 39.206,
@@ -19,187 +19,115 @@
     "timezone": "Europe/Rome"
   },
   "reliability": {
-    "overall": "media",
-    "wind": "medio-alta settore,differenze intensità"
+    "overall": "bassa",
+    "wind": "spread1–16kn,rovesci",
+    "rain": "media"
   },
   "wind": {
-    "central_speed_kn": "12–16 finestra10–13",
-    "central_direction_deg": "110–125",
+    "central_speed_kn": "5–10,7–12finalecondizionato",
+    "central_direction_deg": "80–150 ramo orientale",
     "direction_reference": "magnetic",
-    "gusts_kn": "18–22",
+    "gusts_kn": "9–15centrali,15–20alto;temporalioltreinviluppo",
     "hourly": [
       {
         "h": "08:00",
         "speed_kn_range": [
-          9,
-          13
+          4,
+          8
         ],
+        "alternative": "1–4 oppure12–16",
         "direction_deg_range": [
           80,
-          120
-        ],
-        "gust_kn_range": [
-          13,
-          20
+          150
         ]
       },
       {
         "h": "09:00",
         "speed_kn_range": [
-          9,
-          13
+          4,
+          8
         ],
+        "alternative": "1–4 oppure12–16",
         "direction_deg_range": [
           80,
-          120
-        ],
-        "gust_kn_range": [
-          13,
-          20
+          150
         ]
       },
       {
         "h": "10:00",
         "speed_kn_range": [
-          12,
-          16
+          6,
+          11
         ],
+        "alternative": "1–4 oppure12–16",
         "direction_deg_range": [
-          110,
-          140
-        ],
-        "gust_kn_range": [
-          18,
-          22
+          80,
+          150
         ]
       },
       {
         "h": "11:00",
         "speed_kn_range": [
-          12,
-          16
+          7,
+          12
         ],
+        "alternative": "1–4 oppure12–16",
         "direction_deg_range": [
-          110,
-          140
-        ],
-        "gust_kn_range": [
-          18,
-          22
+          80,
+          150
         ]
       },
       {
         "h": "12:00",
         "speed_kn_range": [
-          12,
-          16
+          7,
+          12
         ],
+        "alternative": "1–4 oppure12–16",
         "direction_deg_range": [
-          110,
-          140
-        ],
-        "gust_kn_range": [
-          18,
-          22
-        ]
-      },
-      {
-        "h": "13:00",
-        "speed_kn_range": [
-          12,
-          16
-        ],
-        "direction_deg_range": [
-          110,
-          140
-        ],
-        "gust_kn_range": [
-          18,
-          22
-        ]
-      },
-      {
-        "h": "14:00",
-        "speed_kn_range": [
-          9,
-          13
-        ],
-        "direction_deg_range": [
-          110,
-          140
-        ],
-        "gust_kn_range": [
-          13,
-          20
-        ]
-      },
-      {
-        "h": "15:00",
-        "speed_kn_range": [
-          9,
-          13
-        ],
-        "direction_deg_range": [
-          110,
-          140
-        ],
-        "gust_kn_range": [
-          13,
-          20
-        ]
-      },
-      {
-        "h": "16:00",
-        "speed_kn_range": [
-          9,
-          13
-        ],
-        "direction_deg_range": [
-          110,
-          140
-        ],
-        "gust_kn_range": [
-          13,
-          20
+          80,
+          150
         ]
       }
     ],
-    "rotations": "E→ESE/SE,persistenza15–20min",
-    "spread": "PWG19–20alto,ramobasso5–9"
-  },
-  "temperature": {
-    "water_c": 21.2,
-    "water_source": "modellata",
-    "air_c": "17–22,ramofreddo12–15inizio"
+    "spread": "AROME12–15 controICON/GFS1–4 eAIFS4",
+    "rotations": "settori deboli incompatibili,no media"
   },
   "sea_state": {
-    "wave_height_m": "0.44–0.66",
-    "wave_period_s": "3–3.8",
-    "wave_direction": "149–159true",
-    "operational_note": "chop in crescita"
+    "wave_height_m": "0.74–0.78",
+    "wave_period_s": "5–5.2",
+    "wave_direction": "132–135true"
+  },
+  "temperature": {
+    "air_c": "16–21",
+    "water_c": "21.0–21.1",
+    "water_source": "modellata",
+    "stability": "quasineutra/debolmenteinstabile"
   },
   "tide_current": {
     "current_expected": "non misurata"
   },
   "triggers": [
-    "bandaESEcontinua≥11–12kn",
-    "sotto9–10alle10:30",
-    "rotazione persistente15–20min",
-    "vento in calo chop formato",
-    "basi scurepioggia"
+    "vento base≥9–10 persistente",
+    "sotto5cononda",
+    "costa/aperto≥3",
+    "pioggiasaltotermico",
+    "celle/tuoni/fulmini"
   ],
   "recommended_window": {
-    "from": "10:00",
-    "to": "13:00",
-    "core": "10:30–12:30"
+    "from": "10:30",
+    "to": "12:30",
+    "status": "candidate_only_not_reliable_weather_window",
+    "condition": "solo se pressione continua e assenza fenomeni in avvicinamento"
   },
+  "convective_risk": "rovesci e temporali possibili,regioneorientalefenomeniforti",
   "bias_applied": {
     "source": "none"
   },
   "sources_meta": {
-    "notes": "raw/sources/2026-11-03_predictwind_poetto_2026-11-04/source_notes.md"
+    "notes": "raw/sources/2026-11-04_predictwind_poetto_2026-11-05/source_notes.md"
   },
-  "linked_report": "reports/2026-11-04_cagliari-poetto_dad1fb21d1/2026-11-04_previsione_meteo_poetto_0800.md",
-  "linked_report_html": "reports/2026-11-04_cagliari-poetto_dad1fb21d1/2026-11-04_previsione_meteo_poetto_0800.html",
-  "revision": "8a8d97356196c010cba546acd1e7958a3af2a86a3ddd9ad242e87f22579489f1"
+  "linked_report": "reports/2026-11-05_cagliari-poetto_1d50f4c0a4/2026-11-05_previsione_meteo_poetto_0800.md",
+  "linked_report_html": "reports/2026-11-05_cagliari-poetto_1d50f4c0a4/2026-11-05_previsione_meteo_poetto_0800.html",
+  "revision": "f59f6eeb6473d084a8c7ed265be9c6a34486d45fca19dc33dfe216777d51fe67"
 }

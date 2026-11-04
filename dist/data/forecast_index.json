@@ -1,7 +1,23 @@
 {
   "schema_version": "forecast_index.v1",
-  "updated_at": "2026-11-03T18:17:43+01:00",
+  "updated_at": "2026-11-04T16:23:15+01:00",
   "forecasts": [
+    {
+      "id": "2026-11-05_cagliari-poetto_1d50f4c0a4",
+      "label": "2026-11-05 · Cagliari / Poetto · Nacra 17 · 08:00–12:30",
+      "date": "2026-11-05",
+      "venue": "Cagliari / Poetto",
+      "race_area": "Poetto centrale",
+      "forecast_center": {
+        "lat": 39.206,
+        "lon": 9.181
+      },
+      "path": "data/2026-11-05_cagliari-poetto_1d50f4c0a4_forecast_context.json",
+      "revision": "f59f6eeb6473d084a8c7ed265be9c6a34486d45fca19dc33dfe216777d51fe67",
+      "is_latest": true,
+      "issued_at": "2026-11-04T16:23:15+01:00",
+      "linked_report_html": "reports/2026-11-05_cagliari-poetto_1d50f4c0a4/2026-11-05_previsione_meteo_poetto_0800.html"
+    },
     {
       "id": "2026-11-04_cagliari-poetto_dad1fb21d1",
       "label": "2026-11-04 · Cagliari / Poetto · Nacra 17 · 08:00–16:00",
@@ -14,7 +30,7 @@
       },
       "path": "data/2026-11-04_cagliari-poetto_dad1fb21d1_forecast_context.json",
       "revision": "8a8d97356196c010cba546acd1e7958a3af2a86a3ddd9ad242e87f22579489f1",
-      "is_latest": true,
+      "is_latest": false,
       "issued_at": "2026-11-03T18:17:43+01:00",
       "linked_report_html": "reports/2026-11-04_cagliari-poetto_dad1fb21d1/2026-11-04_previsione_meteo_poetto_0800.html"
     },
